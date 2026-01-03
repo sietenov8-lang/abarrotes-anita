@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abarrotes ANITA</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-primary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --accent-primary: #3b82f6;
+  --accent-success: #10b981;
+  --accent-danger: #ef4444;
+  --accent-warning: #f59e0b;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-card: #0d0d0d;
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --border-color: #1e293b;
+  --accent-primary: #ff0040;
+  --accent-success: #00ff88;
+  --accent-danger: #ff1744;
+  --shadow: 0 0 30px rgba(255, 0, 64, 0.15);
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+.header {
+  background: var(--bg-card);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border-color);
+}
+[data-theme="dark"] .header {
+  box-shadow: 0 0 40px rgba(255, 0, 64, 0.2);
+  border-bottom: 2px solid #ff0040;
+}
+.header h1 { font-size: 18px; font-weight: 600; }
+[data-theme="dark"] .header h1 { text-shadow: 0 0 20px #ff0040; }
+.header-fecha { font-size: 11px; color: var(--text-secondary); }
+.theme-toggle {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 20px;
+}
+[data-theme="dark"] .theme-toggle {
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 25px rgba(255, 0, 64, 0.4);
+}
+.app { max-width: 600px; margin: 0 auto; }
+.tabs {
+  display: flex;
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--border-color);
+  position: sticky;
+  top: 53px;
+  z-index: 99;
+  overflow-x: auto;
+}
+[data-theme="dark"] .tabs { border-bottom: 2px solid #ff0040; }
+.tab {
+  flex: 1;
+  padding: 15px 5px;
+  text-align: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+}
+.tab.active {
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
+}
+.tab-content { display: none; padding: 15px; }
+.tab-content.active { display: block; }
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--bg-card);
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+[data-theme="dark"] .stat-card {
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 30px rgba(255, 0, 64, 0.15);
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent-danger);
+}
+[data-theme="dark"] .stat-value { text-shadow: 0 0 20px var(--accent-primary); }
+.search-box {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 15px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 15px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: inherit;
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.hint-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  color: white;
+}
+.btn-primary { background: var(--accent-primary); }
+.btn-success { background: var(--accent-success); }
+.btn-danger { background: var(--accent-danger); }
+.btn-warning { background: var(--accent-warning); }
+.btn-secondary { background: var(--text-secondary); }
+.pedido-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+[data-theme="dark"] .pedido-card {
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 35px rgba(255, 0, 64, 0.15);
+}
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.pedido-proveedor {
+  font-weight: 700;
+  font-size: 17px;
+}
+[data-theme="dark"] .pedido-proveedor {
+  text-shadow: 0 0 10px rgba(255, 0, 64, 0.3);
+}
+.badge {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.badge-pendiente { background: #fef3c7; color: #92400e; }
+.badge-inmediata { background: #dbeafe; color: #1e40af; }
+.badge-programado { background: #e0e7ff; color: #4338ca; }
+.badge-entregado { background: #d1fae5; color: #065f46; }
+.badge-gasto { background: #fce7f3; color: #831843; }
+[data-theme="dark"] .badge-pendiente {
+  background: #422006;
+  color: #ffd600;
+  box-shadow: 0 0 20px rgba(255, 214, 0, 0.3);
+}
+[data-theme="dark"] .badge-inmediata {
+  background: #0a1a1d;
+  color: #00d9ff;
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+}
+.pedido-productos {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 10px 0;
+  line-height: 1.8;
+  padding-left: 20px;
+}
+.pedido-productos-item {
+  display: block;
+  padding: 4px 0;
+  position: relative;
+}
+.pedido-productos-item:before {
+  content: "▸";
+  position: absolute;
+  left: -15px;
+  color: var(--accent-primary);
+  font-weight: bold;
+}
+.pedido-info {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 6px 0;
+}
+.pedido-fechas {
+  display: flex;
+  gap: 15px;
+  margin: 8px 0;
+  font-size: 12px;
+}
+.fecha-item { display: flex; flex-direction: column; gap: 3px; }
+.fecha-label { color: var(--text-secondary); font-weight: 500; }
+.fecha-valor { color: var(--text-primary); font-weight: 600; }
+.pedido-monto {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-danger);
+  margin: 12px 0;
+}
+[data-theme="dark"] .pedido-monto {
+  text-shadow: 0 0 20px var(--accent-danger);
+}
+.pedido-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.pedido-actions button {
+  padding: 12px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+}
+.btn-realizado { background: #8b5cf6; }
+.btn-edit { background: #6366f1; }
+.btn-icon { background: var(--accent-danger); }
+.btn-entregado-card { background: var(--accent-success); }
+.filter-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.filter-btn {
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-card);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.filter-btn.active {
+  background: var(--accent-primary);
+  color: white;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.modal.active { display: flex; }
+.modal-content {
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 25px;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+[data-theme="dark"] .modal-content {
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 60px rgba(255, 0, 64, 0.4);
+}
+.modal-header {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.modal-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 15px;
+}
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 14px 28px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 2000;
+  display: none;
+}
+.toast.show { display: block; }
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--text-secondary);
+}
+.empty-state-icon {
+  font-size: 56px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 25px 0 12px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+}
+[data-theme="dark"] .section-title {
+  border-bottom: 2px solid #ff0040;
+}
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+}
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: var(--bg-card);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+.proveedor-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.proveedor-nombre {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.proveedor-dias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.dia-badge {
+  background: var(--accent-primary);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.proveedor-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.proveedor-actions button {
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Abarrotes "ANITA"</h1>
+    <div class="header-fecha" id="fechaActual">Cargando...</div>
+  </div>
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
+</div>
+
+<div class="app">
+  <div class="tabs">
+    <button class="tab active" onclick="cambiarTab('pedidos')">Pedidos</button>
+    <button class="tab" onclick="cambiarTab('nuevo')">Nuevo</button>
+    <button class="tab" onclick="cambiarTab('gastos')">Gastos</button>
+    <button class="tab" onclick="cambiarTab('historial')">Historial</button>
+    <button class="tab" onclick="cambiarTab('entregados')">Entregados</button>
+    <button class="tab" onclick="cambiarTab('proveedores')">Proveedores</button>
+  </div>
+
+  <div id="pedidos" class="tab-content active">
+    <input type="text" class="search-box" id="searchPedidos" placeholder="Buscar..." onkeyup="buscarPedidos()">
+    
+    <div class="dashboard">
+      <div class="stat-card">
+        <div class="stat-label">Pagado hoy</div>
+        <div class="stat-value" id="totalPagadoHoy">$0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">A pagar mañana</div>
+        <div class="stat-value" id="totalPagarManana">$0</div>
+      </div>
+    </div>
+
+    <div class="filter-buttons">
+      <button class="filter-btn active" onclick="filtrarPedidos('todos')">Todos</button>
+      <button class="filter-btn" onclick="filtrarPedidos('pendiente')">Pendientes</button>
+      <button class="filter-btn" onclick="filtrarPedidos('inmediata')">Inmediata</button>
+      <button class="filter-btn" onclick="filtrarPedidos('programado')">Programado</button>
+    </div>
+
+    <div id="listaPedidos"></div>
+  </div>
+
+  <div id="nuevo" class="tab-content">
+    <form id="formNuevoPedido" onsubmit="crearPedido(event)">
+      <div class="form-group">
+        <label>Día de la semana</label>
+        <select id="nuevoDia" required onchange="actualizarProveedoresPorDia()">
+          <option value="">Seleccionar día...</option>
+          <option value="LUNES">Lunes</option>
+          <option value="MARTES">Martes</option>
+          <option value="MIERCOLES">Miércoles</option>
+          <option value="JUEVES">Jueves</option>
+          <option value="VIERNES">Viernes</option>
+          <option value="SABADO">Sábado</option>
+          <option value="DOMINGO">Domingo</option>
+        </select>
+        <div class="hint-text" id="hintDia"></div>
+      </div>
+      
+      <div class="form-group">
+        <label>Proveedor</label>
+        <select id="nuevoProveedor" required>
+          <option value="">Primero selecciona un día</option>
+        </select>
+        <div class="hint-text" id="hintProveedores"></div>
+      </div>
+      
+      <div class="form-group">
+        <label>Productos (uno por línea)</label>
+        <textarea id="nuevosProductos" placeholder="Coca 600ml&#10;Coca 400ml&#10;Pepsi 1L" required></textarea>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">✓ Crear Pedido</button>
+    </form>
+  </div>
+
+  <div id="gastos" class="tab-content">
+    <h2 style="margin-bottom: 20px; font-size: 18px;">💰 Registrar Gasto</h2>
+    <form id="formNuevoGasto" onsubmit="crearGasto(event)">
+      <div class="form-group">
+        <label>Descripción</label>
+        <input type="text" id="gastoDescripcion" placeholder="Ej: Varios, Mercado" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Monto</label>
+        <input type="number" id="gastoMonto" placeholder="$0.00" step="0.01" required>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">✓ Registrar</button>
+    </form>
+
+    <div class="section-title">Gastos de Hoy</div>
+    <div id="listaGastos"></div>
+  </div>
+
+  <div id="historial" class="tab-content">
+    <h2 style="margin-bottom: 15px; font-size: 18px;">Historial por Fecha</h2>
+    
+    <div style="margin-bottom: 20px;">
+      <input type="date" style="width:100%;padding:14px;border:2px solid var(--accent-primary);border-radius:12px;font-weight:600;" id="filtroFechaHistorial" onchange="actualizarHistorial()">
+    </div>
+
+    <input type="text" class="search-box" id="searchHistorial" placeholder="Buscar..." onkeyup="actualizarHistorial()">
+    
+    <div id="listaHistorial"></div>
+  </div>
+
+  <div id="entregados" class="tab-content">
+    <input type="text" class="search-box" id="searchEntregados" placeholder="Buscar..." onkeyup="buscarEntregados()">
+    <div id="listaEntregados"></div>
+  </div>
+
+  <div id="proveedores" class="tab-content">
+    <button class="btn btn-success" onclick="mostrarModalProveedor()">+ Añadir Proveedor</button>
+    
+    <div class="form-group" style="margin-top:15px;">
+      <label>Filtrar por día</label>
+      <select style="width:100%;padding:14px;border:2px solid var(--accent-primary);border-radius:12px;" id="filtroDiaProveedores" onchange="actualizarListaProveedores()">
+        <option value="">Todos</option>
+        <option value="LUNES">Lunes</option>
+        <option value="MARTES">Martes</option>
+        <option value="MIERCOLES">Miércoles</option>
+        <option value="JUEVES">Jueves</option>
+        <option value="VIERNES">Viernes</option>
+        <option value="SABADO">Sábado</option>
+        <option value="DOMINGO">Domingo</option>
+      </select>
+    </div>
+    
+    <div id="listaProveedores"></div>
+  </div>
+</div>
+
+<div id="modalRealizado" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">¿Cuándo se entrega?</div>
+    <div class="form-group">
+      <label>Monto pagado</label>
+      <input type="number" id="inputMontoRealizado" placeholder="$0.00" step="0.01">
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-primary" onclick="guardarRealizado('hoy')">Hoy</button>
+      <button class="btn btn-secondary" onclick="guardarRealizado('proximo')">Próximo día</button>
+    </div>
+    <button class="btn btn-danger" onclick="cerrarModal()" style="margin-top: 10px;">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalEditar" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">✏️ Editar Pedido</div>
+    <div class="form-group">
+      <label>Productos</label>
+      <textarea id="editarProductos" rows="6"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Monto</label>
+      <input type="number" id="editarMonto" placeholder="$0.00" step="0.01">
+    </div>
+    <button class="btn btn-primary" onclick="guardarEdicion()">✓ Guardar</button>
+    <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalProveedor" class="modal">
+  <div class="modal-content">
+    <div class="modal-header" id="modalProveedorHeader">+ Añadir Proveedor</div>
+    <div class="form-group">
+      <label>Nombre</label>
+      <input type="text" id="inputNombreProveedor" placeholder="Ej: COCA, LALA">
+    </div>
+    <div class="form-group">
+      <label>Días que pasa</label>
+      <div class="checkbox-group">
+        <div class="checkbox-item">
+          <input type="checkbox" id="checkLunes" value="LUNES">
+          <label for="checkLunes">Lunes</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="checkMartes" value="MARTES">
+          <label for="checkMartes">Martes</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="checkMiercoles" value="MIERCOLES">
+          <label for="checkMiercoles">Miércoles</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="checkJueves" value="JUEVES">
+          <label for="checkJueves">Jueves</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="checkViernes" value="VIERNES">
+          <label for="checkViernes">Viernes</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="checkSabado" value="SABADO">
+          <label for="checkSabado">Sábado</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="checkDomingo" value="DOMINGO">
+          <label for="checkDomingo">Domingo</label>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="guardarProveedor()">✓ Guardar</button>
+    <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDYaU2v9E2kXD6WEtzMWYpTQBJj9cPR-8A",
+  authDomain: "pedidos-proveedores-89598.firebaseapp.com",
+  databaseURL: "https://pedidos-proveedores-89598-default-rtdb.firebaseio.com",
+  projectId: "pedidos-proveedores-89598",
+  storageBucket: "pedidos-proveedores-89598.firebasestorage.app",
+  messagingSenderId: "501093587021",
+  appId: "1:501093587021:web:b213c955829740080de404"
+};
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+const PROVEEDORES_INICIALES = {
+  "LUNES": ["COCA", "BOTANAS", "LALA", "JARRITO", "GAMESA"],
+  "MARTES": ["BIG COLA", "BIMBO", "BOING"],
+  "MIERCOLES": ["ALPURA", "COCA", "JARRITO"],
+  "JUEVES": ["BIMBO", "DANONE", "HELADOS"],
+  "VIERNES": ["ALEN", "BARCEL", "COCA", "LALA"],
+  "SABADO": ["ACT", "ALPURA", "BIMBO"],
+  "DOMINGO": ["PABLO", "ZORRO"]
+};
+
+const DIAS_SEMANA_MAP = {
+  'DOMINGO': 0, 'LUNES': 1, 'MARTES': 2, 'MIERCOLES': 3,
+  'JUEVES': 4, 'VIERNES': 5, 'SABADO': 6
+};
+
+const MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+let pedidos = {};
+let gastos = {};
+let proveedoresPorDia = {};
+let proveedoresUnicos = {};
+let pedidoActual = null;
+let proveedorActualEditar = null;
+let filtroActual = 'todos';
+let busquedaPedidos = '';
+let busquedaEntregados = '';
+
+function actualizarFechaHeader() {
+  const hoy = new Date();
+  const dia = hoy.getDate();
+  const mes = MESES[hoy.getMonth()];
+  const diaSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"][hoy.getDay()];
+  document.getElementById('fechaActual').textContent = `${diaSemana}, ${dia} ${mes}`;
+}
+
+function formatearFechaLocal(fecha) {
+  const year = fecha.getFullYear();
+  const month = String(fecha.getMonth() + 1).padStart(2, '0');
+  const day = String(fecha.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function calcularFechaPorDiaSemana(diaSemanaTexto) {
+  const hoy = new Date();
+  const diaActualNumero = hoy.getDay();
+  const diaSeleccionadoNumero = DIAS_SEMANA_MAP[diaSemanaTexto];
+  let diferenciaDias = diaSeleccionadoNumero - diaActualNumero;
+  const fechaCalculada = new Date(hoy);
+  fechaCalculada.setDate(hoy.getDate() + diferenciaDias);
+  return formatearFechaLocal(fechaCalculada);
+}
+
+function obtenerProximoDiaHabil(desde = new Date()) {
+  const fecha = new Date(desde);
+  fecha.setDate(fecha.getDate() + 1);
+  if (fecha.getDay() === 0) fecha.setDate(fecha.getDate() + 1);
+  return formatearFechaLocal(fecha);
+}
+
+function obtenerFechaDeEntrega(cuandoPaga) {
+  const hoy = new Date();
+  if (cuandoPaga === 'hoy') return formatearFechaLocal(hoy);
+  return obtenerProximoDiaHabil(hoy);
+}
+
+function formatearFechaCompleta(fechaStr) {
+  const partes = fechaStr.split('-');
+  const fecha = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+  const dia = fecha.getDate();
+  const mes = MESES[fecha.getMonth()];
+  const diaSemana = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fecha.getDay()];
+  return `${diaSemana}, ${dia} ${mes}`;
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', newTheme);
+}
+
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+function inicializarProveedores() {
+  database.ref('proveedores').once('value', (snapshot) => {
+    const data = snapshot.val();
+    if (!data || Object.keys(data).length === 0) {
+      database.ref('proveedores').set(PROVEEDORES_INICIALES);
+    }
+  });
+}
+
+function cargarProveedores() {
+  database.ref('proveedores').on('value', (snapshot) => {
+    proveedoresPorDia = snapshot.val() || PROVEEDORES_INICIALES;
+    generarProveedoresUnicos();
+    actualizarListaProveedores();
+  });
+}
+
+function generarProveedoresUnicos() {
+  proveedoresUnicos = {};
+  Object.keys(proveedoresPorDia).forEach(dia => {
+    if (Array.isArray(proveedoresPorDia[dia])) {
+      proveedoresPorDia[dia].forEach(proveedor => {
+        if (!proveedoresUnicos[proveedor]) proveedoresUnicos[proveedor] = [];
+        if (!proveedoresUnicos[proveedor].includes(dia)) proveedoresUnicos[proveedor].push(dia);
+      });
+    }
+  });
+}
+
+function cargarPedidos() {
+  database.ref('pedidos').on('value', (snapshot) => {
+    pedidos = snapshot.val() || {};
+    actualizarListaPedidos();
+    actualizarDashboard();
+    actualizarListaEntregados();
+    actualizarHistorial();
+  });
+}
+
+function cargarGastos() {
+  database.ref('gastos').on('value', (snapshot) => {
+    gastos = snapshot.val() || {};
+    actualizarListaGastos();
+    actualizarDashboard();
+  });
+}
+
+function actualizarDashboard() {
+  const hoy = formatearFechaLocal(new Date());
+  const manana = obtenerProximoDiaHabil(new Date());
+  
+  let pagadoHoy = 0;
+  let pagarManana = 0;
+  
+  Object.keys(pedidos).forEach(id => {
+    const p = pedidos[id];
+    if (p.fechaEntrega && p.fechaEntrega === hoy && p.monto && p.estado === 'Inmediata') {
+      pagadoHoy += parseFloat(p.monto);
+    }
+    if (p.fechaEntrega && p.fechaEntrega === manana && p.monto && p.estado === 'Programado') {
+      pagarManana += parseFloat(p.monto);
+    }
+  });
+  
+  Object.keys(gastos).forEach(id => {
+    const g = gastos[id];
+    if (g.fecha === hoy && g.monto) pagadoHoy += parseFloat(g.monto);
+  });
+  
+  document.getElementById('totalPagadoHoy').textContent = '$' + pagadoHoy.toFixed(2);
+  document.getElementById('totalPagarManana').textContent = '$' + pagarManana.toFixed(2);
+}
+
+function actualizarProveedoresPorDia() {
+  const dia = document.getElementById('nuevoDia').value;
+  if (!dia) return;
+  
+  const select = document.getElementById('nuevoProveedor');
+  const hint = document.getElementById('hintProveedores');
+  
+  select.innerHTML = '<option value="">Seleccionar proveedor</option>';
+  
+  const proveedoresDia = proveedoresPorDia[dia];
+  
+  if (proveedoresDia && Array.isArray(proveedoresDia)) {
+    const proveedoresOrdenados = [...proveedoresDia].sort();
+    proveedoresOrdenados.forEach(proveedor => {
+      const option = document.createElement('option');
+      option.value = proveedor;
+      option.textContent = proveedor;
+      select.appendChild(option);
+    });
+    hint.textContent = `${proveedoresOrdenados.length} proveedores disponibles`;
+  }
+  
+  const fechaCalculada = calcularFechaPorDiaSemana(dia);
+  document.getElementById('hintDia').textContent = `Fecha: ${formatearFechaCompleta(fechaCalculada)}`;
+}
+
+function buscarPedidos() {
+  busquedaPedidos = document.getElementById('searchPedidos').value.toLowerCase();
+  actualizarListaPedidos();
+}
+
+function filtrarPedidos(filtro) {
+  filtroActual = filtro;
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  actualizarListaPedidos();
+}
+
+function actualizarListaPedidos() {
+  const lista = document.getElementById('listaPedidos');
+  let pedidosArray = Object.keys(pedidos).map(id => ({id, ...pedidos[id]}));
+  
+  if (filtroActual !== 'todos') {
+    const estadoFiltro = filtroActual.charAt(0).toUpperCase() + filtroActual.slice(1);
+    pedidosArray = pedidosArray.filter(p => p.estado === estadoFiltro || (filtroActual === 'inmediata' && p.estado === 'Inmediata'));
+  }
+  
+  pedidosArray = pedidosArray.filter(p => p.estado !== 'Entregado');
+  
+  if (busquedaPedidos) {
+    pedidosArray = pedidosArray.filter(p => 
+      p.proveedor.toLowerCase().includes(busquedaPedidos) ||
+      p.productos.toLowerCase().includes(busquedaPedidos)
+    );
+  }
+  
+  pedidosArray.sort((a, b) => a.proveedor.localeCompare(b.proveedor));
+  
+  if (pedidosArray.length === 0) {
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div>No hay pedidos</div></div>';
+    return;
+  }
+  
+  let html = '';
+  pedidosArray.forEach(p => {
+    const badgeClass = 'badge-' + p.estado.toLowerCase();
+    const monto = p.monto ? `<div class="pedido-monto">$${parseFloat(p.monto).toFixed(2)}</div>` : '';
+    
+    const productosArray = p.productos.split('
+').filter(prod => prod.trim());
+    const productosHTML = productosArray.map(prod => 
+      `<span class="pedido-productos-item">${prod.trim()}</span>`
+    ).join('');
+    
+    const fechaPedido = p.fecha;
+    const fechaEntrega = p.fechaEntrega || 'Pendiente';
+    
+    let fechasHTML = '';
+    if (p.fechaEntrega) {
+      fechasHTML = `
+        <div class="pedido-fechas">
+          <div class="fecha-item">
+            <div class="fecha-label">Creado:</div>
+            <div class="fecha-valor">${formatearFechaCompleta(fechaPedido)}</div>
+          </div>
+          <div class="fecha-item">
+            <div class="fecha-label">Entrega:</div>
+            <div class="fecha-valor">${formatearFechaCompleta(fechaEntrega)}</div>
+          </div>
+        </div>
+      `;
+    } else {
+      fechasHTML = `<div class="pedido-info">Creado: ${formatearFechaCompleta(fechaPedido)}</div>`;
+    }
+    
+    html += `
+      <div class="pedido-card">
+        <div class="pedido-header">
+          <div class="pedido-proveedor">${p.proveedor}</div>
+          <span class="badge ${badgeClass}">${p.estado}</span>
+        </div>
+        <div class="pedido-productos">${productosHTML}</div>
+        ${fechasHTML}
+        ${monto}
+        <div class="pedido-actions">
+          ${p.estado === 'Pendiente' ? `
+            <button class="btn-realizado" onclick="marcarRealizado('${p.id}')">Realizado</button>
+            <button class="btn-edit" onclick="editarPedido('${p.id}')">Editar</button>
+            <button class="btn-icon" onclick="eliminarPedido('${p.id}')">Eliminar</button>
+          ` : ''}
+          ${(p.estado === 'Inmediata' || p.estado === 'Programado') && p.monto ? `
+            <button class="btn-entregado-card" onclick="marcarEntregado('${p.id}')">Entregado</button>
+            <button class="btn-edit" onclick="editarPedido('${p.id}')">Editar</button>
+            <button class="btn-icon" onclick="eliminarPedido('${p.id}')">Eliminar</button>
+          ` : ''}
+          ${(p.estado === 'Inmediata' || p.estado === 'Programado') && !p.monto ? `
+            <button class="btn-realizado" onclick="marcarRealizado('${p.id}')">Realizado</button>
+            <button class="btn-edit" onclick="editarPedido('${p.id}')">Editar</button>
+            <button class="btn-icon" onclick="eliminarPedido('${p.id}')">Eliminar</button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  });
+  
+  lista.innerHTML = html;
+}
+
+function actualizarHistorial() {
+  const lista = document.getElementById('listaHistorial');
+  const fechaSeleccionada = document.getElementById('filtroFechaHistorial').value;
+  const busqueda = document.getElementById('searchHistorial').value.toLowerCase();
+  
+  if (!fechaSeleccionada) {
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><div>Selecciona una fecha</div></div>';
+    return;
+  }
+  
+  let historialArray = Object.keys(pedidos)
+    .map(id => ({id, ...pedidos[id]}))
+    .filter(p => p.fecha === fechaSeleccionada);
+  
+  if (busqueda) {
+    historialArray = historialArray.filter(p =>
+      p.proveedor.toLowerCase().includes(busqueda) ||
+      p.productos.toLowerCase().includes(busqueda)
+    );
+  }
+  
+  historialArray.sort((a, b) => a.proveedor.localeCompare(b.proveedor));
+  
+  if (historialArray.length === 0) {
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><div>No hay pedidos</div></div>';
+    return;
+  }
+  
+  let html = '';
+  let totalGeneral = 0;
+  
+  historialArray.forEach(p => {
+    const badgeClass = 'badge-' + p.estado.toLowerCase();
+    const monto = p.monto ? parseFloat(p.monto) : 0;
+    totalGeneral += monto;
+    const montoHTML = monto > 0 ? `<div class="pedido-monto">$${monto.toFixed(2)}</div>` : '';
+    
+    const productosArray = p.productos.split('
+').filter(prod => prod.trim());
+    const productosHTML = productosArray.map(prod => 
+      `<span class="pedido-productos-item">${prod.trim()}</span>`
+    ).join('');
+    
+    html += `
+      <div class="pedido-card">
+        <div class="pedido-header">
+          <div class="pedido-proveedor">${p.proveedor}</div>
+          <span class="badge ${badgeClass}">${p.estado}</span>
+        </div>
+        <div class="pedido-productos">${productosHTML}</div>
+        <div class="pedido-info">Creado: ${formatearFechaCompleta(p.fecha)}</div>
+        ${montoHTML}
+      </div>
+    `;
+  });
+  
+  html = `
+    <div style="background:var(--bg-card);border:2px solid var(--border-color);padding:20px;border-radius:16px;margin-bottom:20px;">
+      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">${formatearFechaCompleta(fechaSeleccionada)}</div>
+      <div style="font-size:28px;font-weight:800;color:var(--accent-primary);">$${totalGeneral.toFixed(2)}</div>
+      <div style="font-size:13px;color:var(--text-secondary);">${historialArray.length} pedidos</div>
+    </div>
+  ` + html;
+  
+  lista.innerHTML = html;
+}
+
+function buscarEntregados() {
+  busquedaEntregados = document.getElementById('searchEntregados').value.toLowerCase();
+  actualizarListaEntregados();
+}
+
+function actualizarListaEntregados() {
+  const lista = document.getElementById('listaEntregados');
+  
+  let entregadosArray = Object.keys(pedidos)
+    .map(id => ({id, ...pedidos[id]}))
+    .filter(p => p.estado === 'Entregado')
+    .sort((a, b) => new Date(b.fechaEntrega || b.fecha) - new Date(a.fechaEntrega || a.fecha));
+  
+  if (busquedaEntregados) {
+    entregadosArray = entregadosArray.filter(p =>
+      p.proveedor.toLowerCase().includes(busquedaEntregados) ||
+      p.productos.toLowerCase().includes(busquedaEntregados)
+    );
+  }
+  
+  if (entregadosArray.length === 0) {
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div>No hay pedidos entregados</div></div>';
+    return;
+  }
+  
+  let html = '';
+  entregadosArray.forEach(p => {
+    const monto = p.monto ? `<div class="pedido-monto">$${parseFloat(p.monto).toFixed(2)}</div>` : '';
+    const productosArray = p.productos.split('
+').filter(prod => prod.trim());
+    const productosHTML = productosArray.map(prod => 
+      `<span class="pedido-productos-item">${prod.trim()}</span>`
+    ).join('');
+    
+    html += `
+      <div class="pedido-card">
+        <div class="pedido-header">
+          <div class="pedido-proveedor">${p.proveedor}</div>
+          <span class="badge badge-entregado">✓ Entregado</span>
+        </div>
+        <div class="pedido-productos">${productosHTML}</div>
+        <div class="pedido-info">Creado: ${formatearFechaCompleta(p.fecha)}</div>
+        ${monto}
+        <button class="btn btn-danger" onclick="eliminarPedido('${p.id}')" style="margin-top:10px;">Eliminar</button>
+      </div>
+    `;
+  });
+  
+  lista.innerHTML = html;
+}
+
+function actualizarListaGastos() {
+  const lista = document.getElementById('listaGastos');
+  const hoy = formatearFechaLocal(new Date());
+  
+  let gastosArray = Object.keys(gastos)
+    .map(id => ({id, ...gastos[id]}))
+    .filter(g => g.fecha === hoy)
+    .sort((a, b) => b.timestamp - a.timestamp);
+  
+  if (gastosArray.length === 0) {
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><div>No hay gastos hoy</div></div>';
+    return;
+  }
+  
+  let html = '';
+  gastosArray.forEach(g => {
+    html += `
+      <div class="pedido-card">
+        <div class="pedido-header">
+          <div class="pedido-proveedor">${g.descripcion}</div>
+          <span class="badge badge-gasto">GASTO</span>
+        </div>
+        <div class="pedido-monto">$${parseFloat(g.monto).toFixed(2)}</div>
+        <button class="btn btn-danger" onclick="eliminarGasto('${g.id}')">Eliminar</button>
+      </div>
+    `;
+  });
+  
+  lista.innerHTML = html;
+}
+
+function crearPedido(e) {
+  e.preventDefault();
+  
+  const diaSeleccionado = document.getElementById('nuevoDia').value;
+  const fechaCalculada = calcularFechaPorDiaSemana(diaSeleccionado);
+  
+  const pedido = {
+    dia: diaSeleccionado,
+    proveedor: document.getElementById('nuevoProveedor').value,
+    productos: document.getElementById('nuevosProductos').value,
+    fecha: fechaCalculada,
+    estado: 'Pendiente',
+    timestamp: Date.now()
+  };
+  
+  database.ref('pedidos').push(pedido);
+  document.getElementById('formNuevoPedido').reset();
+  
+  mostrarToast(`✓ Pedido creado para ${formatearFechaCompleta(fechaCalculada)}`);
+  cambiarTab('pedidos');
+}
+
+function crearGasto(e) {
+  e.preventDefault();
+  
+  const gasto = {
+    descripcion: document.getElementById('gastoDescripcion').value,
+    monto: parseFloat(document.getElementById('gastoMonto').value),
+    fecha: formatearFechaLocal(new Date()),
+    timestamp: Date.now()
+  };
+  
+  database.ref('gastos').push(gasto);
+  document.getElementById('formNuevoGasto').reset();
+  
+  mostrarToast('✓ Gasto registrado');
+}
+
+function editarPedido(id) {
+  pedidoActual = id;
+  const p = pedidos[id];
+  
+  document.getElementById('editarProductos').value = p.productos;
+  document.getElementById('editarMonto').value = p.monto || '';
+  
+  document.getElementById('modalEditar').classList.add('active');
+}
+
+function guardarEdicion() {
+  const productos = document.getElementById('editarProductos').value;
+  const monto = document.getElementById('editarMonto').value;
+  
+  if (!productos.trim()) {
+    alert('Los productos no pueden estar vacíos');
+    return;
+  }
+  
+  const updates = { productos: productos };
+  if (monto && parseFloat(monto) > 0) updates.monto = parseFloat(monto);
+  
+  database.ref('pedidos/' + pedidoActual).update(updates);
+  cerrarModal();
+  mostrarToast('✓ Pedido actualizado');
+}
+
+function marcarRealizado(id) {
+  pedidoActual = id;
+  document.getElementById('inputMontoRealizado').value = '';
+  document.getElementById('modalRealizado').classList.add('active');
+}
+
+function guardarRealizado(cuando) {
+  const monto = document.getElementById('inputMontoRealizado').value;
+  if (!monto || parseFloat(monto) <= 0) {
+    alert('Ingresa un monto válido');
+    return;
+  }
+  
+  const fechaPago = formatearFechaLocal(new Date());
+  const fechaEntrega = obtenerFechaDeEntrega(cuando);
+  
+  const updates = {
+    monto: parseFloat(monto),
+    fechaPago: fechaPago,
+    fechaEntrega: fechaEntrega,
+    estado: cuando === 'hoy' ? 'Inmediata' : 'Programado'
+  };
+  
+  database.ref('pedidos/' + pedidoActual).update(updates);
+  cerrarModal();
+  
+  mostrarToast(`✓ Pedido realizado - Entrega: ${formatearFechaCompleta(fechaEntrega)}`);
+}
+
+function marcarEntregado(id) {
+  if (confirm('¿Marcar como entregado?')) {
+    database.ref('pedidos/' + id).update({estado: 'Entregado'});
+    mostrarToast('✓ Pedido entregado');
+  }
+}
+
+function eliminarPedido(id) {
+  if (confirm('¿Eliminar este pedido?')) {
+    database.ref('pedidos/' + id).remove();
+    mostrarToast('✓ Pedido eliminado');
+  }
+}
+
+function eliminarGasto(id) {
+  if (confirm('¿Eliminar este gasto?')) {
+    database.ref('gastos/' + id).remove();
+    mostrarToast('✓ Gasto eliminado');
+  }
+}
+
+function actualizarListaProveedores() {
+  const lista = document.getElementById('listaProveedores');
+  const diaFiltro = document.getElementById('filtroDiaProveedores').value;
+  
+  let proveedoresArray = Object.keys(proveedoresUnicos).map(nombre => ({
+    nombre: nombre,
+    dias: proveedoresUnicos[nombre]
+  }));
+  
+  if (diaFiltro) {
+    proveedoresArray = proveedoresArray.filter(p => p.dias.includes(diaFiltro));
+  }
+  
+  proveedoresArray.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  
+  if (proveedoresArray.length === 0) {
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><div>No hay proveedores</div></div>';
+    return;
+  }
+  
+  let html = '';
+  proveedoresArray.forEach(p => {
+    const diasHTML = p.dias.sort().map(dia => 
+      `<span class="dia-badge">${dia}</span>`
+    ).join('');
+    
+    html += `
+      <div class="proveedor-item">
+        <div class="proveedor-nombre">${p.nombre}</div>
+        <div class="proveedor-dias">${diasHTML}</div>
+        <div class="proveedor-actions">
+          <button class="btn-edit" onclick="editarProveedor('${p.nombre}')">Editar</button>
+          <button class="btn-icon" onclick="eliminarProveedor('${p.nombre}')">Eliminar</button>
+        </div>
+      </div>
+    `;
+  });
+  
+  lista.innerHTML = html;
+}
+
+function mostrarModalProveedor() {
+  proveedorActualEditar = null;
+  document.getElementById('modalProveedorHeader').textContent = '+ Añadir Proveedor';
+  document.getElementById('inputNombreProveedor').value = '';
+  document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => cb.checked = false);
+  document.getElementById('modalProveedor').classList.add('active');
+}
+
+function editarProveedor(nombre) {
+  proveedorActualEditar = nombre;
+  document.getElementById('modalProveedorHeader').textContent = '✏️ Editar Proveedor';
+  document.getElementById('inputNombreProveedor').value = nombre;
+  
+  const diasProveedor = proveedoresUnicos[nombre] || [];
+  document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => {
+    cb.checked = diasProveedor.includes(cb.value);
+  });
+  
+  document.getElementById('modalProveedor').classList.add('active');
+}
+
+function guardarProveedor() {
+  const nombre = document.getElementById('inputNombreProveedor').value.trim().toUpperCase();
+  
+  if (!nombre) {
+    alert('Ingresa el nombre del proveedor');
+    return;
+  }
+  
+  const diasSeleccionados = [];
+  document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked').forEach(cb => {
+    diasSeleccionados.push(cb.value);
+  });
+  
+  if (diasSeleccionados.length === 0) {
+    alert('Selecciona al menos un día');
+    return;
+  }
+  
+  if (proveedorActualEditar && proveedorActualEditar !== nombre) {
+    Object.keys(proveedoresPorDia).forEach(dia => {
+      const index = proveedoresPorDia[dia].indexOf(proveedorActualEditar);
+      if (index > -1) proveedoresPorDia[dia].splice(index, 1);
+    });
+  }
+  
+  Object.keys(proveedoresPorDia).forEach(dia => {
+    const index = proveedoresPorDia[dia].indexOf(nombre);
+    if (diasSeleccionados.includes(dia)) {
+      if (index === -1) {
+        proveedoresPorDia[dia].push(nombre);
+        proveedoresPorDia[dia].sort();
+      }
+    } else {
+      if (index > -1) proveedoresPorDia[dia].splice(index, 1);
+    }
+  });
+  
+  database.ref('proveedores').set(proveedoresPorDia);
+  cerrarModal();
+  mostrarToast('✓ Proveedor guardado');
+}
+
+function eliminarProveedor(nombre) {
+  if (confirm(`¿Eliminar ${nombre}?`)) {
+    Object.keys(proveedoresPorDia).forEach(dia => {
+      const index = proveedoresPorDia[dia].indexOf(nombre);
+      if (index > -1) proveedoresPorDia[dia].splice(index, 1);
+    });
+    database.ref('proveedores').set(proveedoresPorDia);
+    mostrarToast('✓ Proveedor eliminado');
+  }
+}
+
+function cambiarTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(t => {
+    if (t.textContent.toLowerCase().includes(tab.toLowerCase())) {
+      t.classList.add('active');
+    }
+  });
+  
+  document.getElementById(tab).classList.add('active');
+}
+
+function cerrarModal() {
+  document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+  pedidoActual = null;
+  proveedorActualEditar = null;
+}
+
+function mostrarToast(mensaje) {
+  const toast = document.getElementById('toast');
+  toast.textContent = mensaje;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+document.querySelectorAll('.modal').forEach(modal => {
+  modal.addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal();
+  });
+});
+
+inicializarProveedores();
+cargarProveedores();
+cargarPedidos();
+cargarGastos();
+actualizarFechaHeader();
+setInterval(actualizarFechaHeader, 60000);
+</script>
+</body>
+</html>
