@@ -3,11 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
 <title>Abarrotes ANITA</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
   --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
   --bg-card: #ffffff;
   --text-primary: #0f172a;
   --text-secondary: #64748b;
@@ -16,10 +23,14 @@
   --accent-success: #10b981;
   --accent-danger: #ef4444;
   --accent-warning: #f59e0b;
+  --accent-inmediata: #8b5cf6;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
+
 [data-theme="dark"] {
   --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
   --bg-card: #0d0d0d;
   --text-primary: #ffffff;
   --text-secondary: #94a3b8;
@@ -27,17 +38,28 @@
   --accent-primary: #ff0040;
   --accent-success: #00ff88;
   --accent-danger: #ff1744;
+  --accent-warning: #ffd600;
+  --accent-inmediata: #00d9ff;
   --shadow: 0 0 30px rgba(255, 0, 64, 0.15);
+  --shadow-hover: 0 0 50px rgba(255, 0, 64, 0.3);
 }
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
+  padding-bottom: 20px;
   transition: all 0.3s ease;
 }
+
+[data-theme="dark"] body {
+  background: #000000;
+}
+
 .header {
   background: var(--bg-card);
+  color: var(--text-primary);
   padding: 15px;
   display: flex;
   justify-content: space-between;
@@ -48,26 +70,84 @@ body {
   z-index: 100;
   border-bottom: 1px solid var(--border-color);
 }
+
 [data-theme="dark"] .header {
   box-shadow: 0 0 40px rgba(255, 0, 64, 0.2);
   border-bottom: 2px solid #ff0040;
+  background: #0a0a0a;
 }
-.header h1 { font-size: 18px; font-weight: 600; }
-[data-theme="dark"] .header h1 { text-shadow: 0 0 20px #ff0040; }
-.header-fecha { font-size: 11px; color: var(--text-secondary); }
+
+.header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .header h1 {
+  text-shadow: 0 0 20px #ff0040;
+}
+
+.header-fecha {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+[data-theme="dark"] .header-fecha {
+  color: var(--accent-primary);
+  text-shadow: 0 0 10px rgba(255, 0, 64, 0.3);
+}
+
 .theme-toggle {
-  background: var(--bg-card);
+  background: var(--bg-secondary);
   border: 2px solid var(--border-color);
   border-radius: 20px;
   padding: 8px 16px;
   cursor: pointer;
   font-size: 20px;
+  transition: all 0.3s;
 }
+
 [data-theme="dark"] .theme-toggle {
+  background: #000000;
   border: 2px solid #ff0040;
   box-shadow: 0 0 25px rgba(255, 0, 64, 0.4);
 }
-.app { max-width: 600px; margin: 0 auto; }
+
+.connection-status {
+  position: fixed;
+  top: 15px;
+  right: 70px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-success);
+  z-index: 101;
+}
+
+[data-theme="dark"] .connection-status {
+  box-shadow: 0 0 20px var(--accent-success);
+}
+
+.connection-status.offline {
+  background: var(--accent-danger);
+}
+
+[data-theme="dark"] .connection-status.offline {
+  box-shadow: 0 0 20px var(--accent-danger);
+}
+
+.app {
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--bg-primary);
+}
+
 .tabs {
   display: flex;
   background: var(--bg-card);
@@ -77,7 +157,12 @@ body {
   z-index: 99;
   overflow-x: auto;
 }
-[data-theme="dark"] .tabs { border-bottom: 2px solid #ff0040; }
+
+[data-theme="dark"] .tabs {
+  border-bottom: 2px solid #ff0040;
+  background: #0a0a0a;
+}
+
 .tab {
   flex: 1;
   padding: 15px 5px;
@@ -88,59 +173,122 @@ body {
   background: transparent;
   font-size: 11px;
   font-weight: 500;
+  transition: all 0.3s;
   border-bottom: 3px solid transparent;
+  white-space: nowrap;
 }
+
 .tab.active {
   color: var(--accent-primary);
   border-bottom-color: var(--accent-primary);
 }
-.tab-content { display: none; padding: 15px; }
-.tab-content.active { display: block; }
-.dashboard {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
+
+[data-theme="dark"] .tab.active {
+  text-shadow: 0 0 15px var(--accent-primary);
 }
-.stat-card {
-  background: var(--bg-card);
-  padding: 18px;
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border-color);
+
+.tab-content {
+  display: none;
+  padding: 15px;
+  animation: fadeIn 0.3s;
 }
-[data-theme="dark"] .stat-card {
-  border: 2px solid #ff0040;
-  box-shadow: 0 0 30px rgba(255, 0, 64, 0.15);
+
+.tab-content.active {
+  display: block;
 }
-.stat-label {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.stat-value {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--accent-danger);
-}
-[data-theme="dark"] .stat-value { text-shadow: 0 0 20px var(--accent-primary); }
+
 .search-box {
   width: 100%;
-  padding: 12px;
+  padding: 12px 16px;
   border: 2px solid var(--border-color);
   border-radius: 12px;
   font-size: 15px;
   background: var(--bg-card);
   color: var(--text-primary);
   margin-bottom: 15px;
+  transition: all 0.3s;
 }
-.form-group { margin-bottom: 18px; }
+
+[data-theme="dark"] .search-box {
+  background: #0a0a0a;
+  border: 2px solid #333;
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+[data-theme="dark"] .search-box:focus {
+  box-shadow: 0 0 25px rgba(255, 0, 64, 0.4);
+  border-color: #ff0040;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s;
+}
+
+[data-theme="dark"] .stat-card {
+  background: #0a0a0a;
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 30px rgba(255, 0, 64, 0.15);
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+[data-theme="dark"] .stat-card:hover {
+  box-shadow: 0 0 50px rgba(255, 0, 64, 0.3);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent-danger);
+}
+
+[data-theme="dark"] .stat-value {
+  text-shadow: 0 0 20px var(--accent-primary);
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
 .form-group label {
   display: block;
   margin-bottom: 8px;
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 14px;
 }
+
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -151,14 +299,42 @@ body {
   font-size: 15px;
   background: var(--bg-card);
   color: var(--text-primary);
+  transition: all 0.3s;
   font-family: inherit;
 }
-.form-group textarea { resize: vertical; min-height: 100px; }
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+  background: #0a0a0a;
+  border: 2px solid #333;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus,
+[data-theme="dark"] .form-group textarea:focus {
+  box-shadow: 0 0 25px rgba(255, 0, 64, 0.3);
+  border-color: #ff0040;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
 .hint-text {
   font-size: 12px;
   color: var(--text-secondary);
   margin-top: 6px;
 }
+
 .btn {
   width: 100%;
   padding: 14px;
@@ -167,14 +343,75 @@ body {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s;
   margin-top: 10px;
+}
+
+.btn-primary {
+  background: var(--accent-primary);
   color: white;
 }
-.btn-primary { background: var(--accent-primary); }
-.btn-success { background: var(--accent-success); }
-.btn-danger { background: var(--accent-danger); }
-.btn-warning { background: var(--accent-warning); }
-.btn-secondary { background: var(--text-secondary); }
+
+[data-theme="dark"] .btn-primary {
+  box-shadow: 0 0 25px rgba(255, 0, 64, 0.5);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  box-shadow: 0 0 40px rgba(255, 0, 64, 0.7);
+}
+
+.btn-success {
+  background: var(--accent-success);
+  color: white;
+}
+
+[data-theme="dark"] .btn-success {
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+}
+
+.btn-danger {
+  background: var(--accent-danger);
+  color: white;
+}
+
+[data-theme="dark"] .btn-danger {
+  box-shadow: 0 0 20px rgba(255, 23, 68, 0.5);
+}
+
+.btn-secondary {
+  background: var(--text-secondary);
+  color: white;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: #222;
+  border: 2px solid #444;
+}
+
+.btn-inmediata {
+  background: var(--accent-inmediata);
+  color: white;
+}
+
+[data-theme="dark"] .btn-inmediata {
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+}
+
+.btn-warning {
+  background: var(--accent-warning);
+  color: white;
+}
+
+[data-theme="dark"] .btn-warning {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+}
+
 .pedido-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -182,46 +419,128 @@ body {
   padding: 16px;
   margin-bottom: 12px;
   box-shadow: var(--shadow);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
 }
+
 [data-theme="dark"] .pedido-card {
+  background: #0d0d0d;
   border: 2px solid #ff0040;
-  box-shadow: 0 0 35px rgba(255, 0, 64, 0.15);
+  box-shadow: 0 0 35px rgba(255, 0, 64, 0.15), inset 0 0 25px rgba(255, 0, 64, 0.05);
 }
+
+.pedido-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+[data-theme="dark"] .pedido-card::before {
+  opacity: 0.5;
+}
+
+.pedido-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+[data-theme="dark"] .pedido-card:hover {
+  box-shadow: 0 0 60px rgba(255, 0, 64, 0.3), inset 0 0 40px rgba(255, 0, 64, 0.08);
+  border-color: #ff1744;
+}
+
+[data-theme="dark"] .pedido-card:hover::before {
+  opacity: 1;
+}
+
 .pedido-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
+
 .pedido-proveedor {
   font-weight: 700;
   font-size: 17px;
+  color: var(--text-primary);
 }
+
 [data-theme="dark"] .pedido-proveedor {
   text-shadow: 0 0 10px rgba(255, 0, 64, 0.3);
 }
+
 .badge {
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.badge-pendiente { background: #fef3c7; color: #92400e; }
-.badge-inmediata { background: #dbeafe; color: #1e40af; }
-.badge-programado { background: #e0e7ff; color: #4338ca; }
-.badge-entregado { background: #d1fae5; color: #065f46; }
-.badge-gasto { background: #fce7f3; color: #831843; }
+
+.badge-pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
 [data-theme="dark"] .badge-pendiente {
   background: #422006;
   color: #ffd600;
   box-shadow: 0 0 20px rgba(255, 214, 0, 0.3);
 }
+
+.badge-inmediata {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
 [data-theme="dark"] .badge-inmediata {
   background: #0a1a1d;
   color: #00d9ff;
   box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
 }
+
+.badge-programado {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+[data-theme="dark"] .badge-programado {
+  background: #0d0a1a;
+  color: #a78bfa;
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+}
+
+.badge-entregado {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+[data-theme="dark"] .badge-entregado {
+  background: #0a1a14;
+  color: #00ff88;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+}
+
+.badge-gasto {
+  background: #fce7f3;
+  color: #831843;
+}
+
+[data-theme="dark"] .badge-gasto {
+  background: #1a0a14;
+  color: #fbbf24;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
 .pedido-productos {
   font-size: 14px;
   color: var(--text-secondary);
@@ -229,11 +548,13 @@ body {
   line-height: 1.8;
   padding-left: 20px;
 }
+
 .pedido-productos-item {
   display: block;
   padding: 4px 0;
   position: relative;
 }
+
 .pedido-productos-item:before {
   content: "▸";
   position: absolute;
@@ -241,68 +562,205 @@ body {
   color: var(--accent-primary);
   font-weight: bold;
 }
+
 .pedido-info {
   font-size: 13px;
   color: var(--text-secondary);
   margin: 6px 0;
 }
+
 .pedido-fechas {
   display: flex;
   gap: 15px;
   margin: 8px 0;
   font-size: 12px;
 }
-.fecha-item { display: flex; flex-direction: column; gap: 3px; }
-.fecha-label { color: var(--text-secondary); font-weight: 500; }
-.fecha-valor { color: var(--text-primary); font-weight: 600; }
+
+.fecha-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.fecha-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.fecha-valor {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 .pedido-monto {
   font-size: 20px;
   font-weight: 700;
   color: var(--accent-danger);
   margin: 12px 0;
 }
+
 [data-theme="dark"] .pedido-monto {
   text-shadow: 0 0 20px var(--accent-danger);
 }
+
 .pedido-actions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-top: 12px;
 }
+
 .pedido-actions button {
   padding: 12px 8px;
   font-size: 12px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
+  transition: all 0.3s;
   font-weight: 600;
+  white-space: nowrap;
+}
+
+.btn-realizado {
+  background: var(--accent-inmediata);
   color: white;
 }
-.btn-realizado { background: #8b5cf6; }
-.btn-edit { background: #6366f1; }
-.btn-icon { background: var(--accent-danger); }
-.btn-entregado-card { background: var(--accent-success); }
-.filter-buttons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin-bottom: 20px;
+
+[data-theme="dark"] .btn-realizado {
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
 }
-.filter-btn {
-  padding: 12px;
-  border: 2px solid var(--border-color);
+
+.btn-edit {
+  background: #6366f1;
+  color: white;
+}
+
+[data-theme="dark"] .btn-edit {
+  background: #1e1b4b;
+  border: 2px solid #6366f1;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+.btn-icon {
+  background: var(--accent-danger);
+  color: white;
+}
+
+[data-theme="dark"] .btn-icon {
+  box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
+}
+
+.btn-entregado-card {
+  background: var(--accent-success);
+  color: white;
+}
+
+[data-theme="dark"] .btn-entregado-card {
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+}
+
+.pedido-actions button:hover {
+  transform: scale(1.05);
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 25px 0 12px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+[data-theme="dark"] .section-title {
+  border-bottom: 2px solid #ff0040;
+  text-shadow: 0 0 15px rgba(255, 0, 64, 0.3);
+}
+
+.proveedor-item {
   background: var(--bg-card);
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  transition: all 0.3s;
 }
-.filter-btn.active {
+
+[data-theme="dark"] .proveedor-item {
+  background: #0a0a0a;
+  border: 2px solid #333;
+}
+
+[data-theme="dark"] .proveedor-item:hover {
+  border-color: #ff0040;
+  box-shadow: 0 0 25px rgba(255, 0, 64, 0.2);
+  transform: translateX(5px);
+}
+
+.proveedor-nombre {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.proveedor-dias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.dia-badge {
   background: var(--accent-primary);
   color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
 }
+
+[data-theme="dark"] .dia-badge {
+  box-shadow: 0 0 15px rgba(255, 0, 64, 0.4);
+}
+
+.proveedor-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.proveedor-actions button {
+  padding: 10px 16px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.proveedor-actions .btn-edit {
+  background: #6366f1;
+  color: white;
+}
+
+[data-theme="dark"] .proveedor-actions .btn-edit {
+  background: #1e1b4b;
+  border: 2px solid #6366f1;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+.proveedor-actions .btn-icon {
+  background: var(--accent-danger);
+  color: white;
+}
+
+[data-theme="dark"] .proveedor-actions .btn-icon {
+  box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
+}
+
 .modal {
   display: none;
   position: fixed;
@@ -312,10 +770,15 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.85);
   z-index: 1000;
+  animation: fadeIn 0.3s;
+}
+
+.modal.active {
+  display: flex;
   justify-content: center;
   align-items: center;
 }
-.modal.active { display: flex; }
+
 .modal-content {
   background: var(--bg-card);
   border-radius: 20px;
@@ -324,22 +787,45 @@ body {
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
+  animation: slideUp 0.3s;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
 }
+
 [data-theme="dark"] .modal-content {
+  background: #0d0d0d;
   border: 2px solid #ff0040;
   box-shadow: 0 0 60px rgba(255, 0, 64, 0.4);
 }
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 .modal-header {
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 20px;
+  color: var(--text-primary);
 }
+
+[data-theme="dark"] .modal-header {
+  text-shadow: 0 0 15px rgba(255, 0, 64, 0.5);
+}
+
 .modal-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 15px;
 }
+
 .toast {
   position: fixed;
   bottom: 20px;
@@ -352,94 +838,215 @@ body {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   z-index: 2000;
   display: none;
+  animation: slideUp 0.3s;
+  border: 1px solid var(--border-color);
 }
-.toast.show { display: block; }
+
+[data-theme="dark"] .toast {
+  background: #0d0d0d;
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 50px rgba(255, 0, 64, 0.4);
+}
+
+.toast.show {
+  display: block;
+}
+
 .empty-state {
   text-align: center;
   padding: 50px 20px;
   color: var(--text-secondary);
 }
+
 .empty-state-icon {
   font-size: 56px;
   margin-bottom: 12px;
   opacity: 0.5;
 }
-.section-title {
+
+.filter-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-card);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.3s;
+}
+
+[data-theme="dark"] .filter-btn {
+  background: #0a0a0a;
+  border: 2px solid #333;
+}
+
+.filter-btn.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+[data-theme="dark"] .filter-btn.active {
+  box-shadow: 0 0 25px rgba(255, 0, 64, 0.5);
+  border-color: #ff0040;
+}
+
+.filtro-fecha-container {
+  margin-bottom: 20px;
+}
+
+.filtro-fecha-input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--accent-primary);
+  border-radius: 12px;
   font-size: 15px;
-  font-weight: 700;
-  margin: 25px 0 12px 0;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
 }
-[data-theme="dark"] .section-title {
-  border-bottom: 2px solid #ff0040;
+
+[data-theme="dark"] .filtro-fecha-input {
+  background: #0a0a0a;
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 20px rgba(255, 0, 64, 0.2);
 }
+
+.filtro-fecha-input:focus {
+  outline: none;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="dark"] .filtro-fecha-input:focus {
+  box-shadow: 0 0 40px rgba(255, 0, 64, 0.5);
+}
+
 .checkbox-group {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin: 15px 0;
 }
+
 .checkbox-item {
   display: flex;
   align-items: center;
   padding: 10px;
-  background: var(--bg-card);
+  background: var(--bg-secondary);
   border-radius: 8px;
   cursor: pointer;
+  transition: all 0.3s;
 }
+
+[data-theme="dark"] .checkbox-item {
+  background: #0a0a0a;
+}
+
+.checkbox-item:hover {
+  background: var(--accent-primary);
+  color: white;
+}
+
+[data-theme="dark"] .checkbox-item:hover {
+  box-shadow: 0 0 20px rgba(255, 0, 64, 0.3);
+}
+
 .checkbox-item input[type="checkbox"] {
   width: 18px;
   height: 18px;
   margin-right: 8px;
   cursor: pointer;
 }
-.proveedor-item {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 10px;
-}
-.proveedor-nombre {
-  font-weight: 600;
-  font-size: 15px;
-  margin-bottom: 8px;
-}
-.proveedor-dias {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.dia-badge {
-  background: var(--accent-primary);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.proveedor-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.proveedor-actions button {
-  padding: 10px;
-  font-size: 13px;
-  border-radius: 8px;
-  border: none;
+
+.checkbox-item label {
   cursor: pointer;
+  font-size: 13px;
   font-weight: 600;
-  color: white;
+}
+
+.filtro-dia-selector {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--accent-primary);
+  border-radius: 12px;
+  font-size: 15px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 20px;
+}
+
+[data-theme="dark"] .filtro-dia-selector {
+  background: #0a0a0a;
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 20px rgba(255, 0, 64, 0.2);
+}
+
+.filtro-dia-selector:focus {
+  outline: none;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="dark"] .filtro-dia-selector:focus {
+  box-shadow: 0 0 40px rgba(255, 0, 64, 0.5);
+}
+
+.historial-total-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+[data-theme="dark"] .historial-total-card {
+  background: #000000;
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 30px rgba(255, 0, 64, 0.2);
+}
+
+.historial-total-fecha {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.historial-total-monto {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--accent-primary);
+}
+
+[data-theme="dark"] .historial-total-monto {
+  text-shadow: 0 0 20px var(--accent-primary);
+}
+
+.historial-total-info {
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 </style>
 </head>
 <body>
 
+<div class="connection-status" id="connectionStatus"></div>
+
 <div class="header">
-  <div>
+  <div class="header-title">
     <h1>Abarrotes "ANITA"</h1>
     <div class="header-fecha" id="fechaActual">Cargando...</div>
   </div>
@@ -457,9 +1064,9 @@ body {
   </div>
 
   <div id="pedidos" class="tab-content active">
-    <input type="text" class="search-box" id="searchPedidos" placeholder="Buscar..." onkeyup="buscarPedidos()">
-    
-    <div class="dashboard">
+    <input type="text" class="search-box" id="searchPedidos" placeholder="Buscar pedido..." onkeyup="buscarPedidos()">
+
+    <div class="dashboard" id="dashboard">
       <div class="stat-card">
         <div class="stat-label">Pagado hoy</div>
         <div class="stat-value" id="totalPagadoHoy">$0</div>
@@ -496,7 +1103,7 @@ body {
         </select>
         <div class="hint-text" id="hintDia"></div>
       </div>
-      
+
       <div class="form-group">
         <label>Proveedor</label>
         <select id="nuevoProveedor" required>
@@ -504,60 +1111,68 @@ body {
         </select>
         <div class="hint-text" id="hintProveedores"></div>
       </div>
-      
+
       <div class="form-group">
         <label>Productos (uno por línea)</label>
         <textarea id="nuevosProductos" placeholder="Coca 600ml&#10;Coca 400ml&#10;Pepsi 1L" required></textarea>
+        <div class="hint-text">Escribe cada producto en una línea diferente</div>
       </div>
-      
+
       <button type="submit" class="btn btn-primary">✓ Crear Pedido</button>
     </form>
   </div>
 
   <div id="gastos" class="tab-content">
-    <h2 style="margin-bottom: 20px; font-size: 18px;">💰 Registrar Gasto</h2>
+    <h2 style="margin-bottom: 20px; font-size: 18px;">💰 Registrar Gasto Directo</h2>
     <form id="formNuevoGasto" onsubmit="crearGasto(event)">
       <div class="form-group">
-        <label>Descripción</label>
-        <input type="text" id="gastoDescripcion" placeholder="Ej: Varios, Mercado" required>
+        <label>¿Qué compraste?</label>
+        <input type="text" id="gastoDescripcion" placeholder="Ej: Varios, Mercado, Refrescos, etc." required>
+        <div class="hint-text">Descripción corta del gasto</div>
       </div>
-      
+
       <div class="form-group">
-        <label>Monto</label>
+        <label>¿Cuánto gastaste?</label>
         <input type="number" id="gastoMonto" placeholder="$0.00" step="0.01" required>
+        <div class="hint-text">Monto total del gasto</div>
       </div>
-      
-      <button type="submit" class="btn btn-primary">✓ Registrar</button>
+
+      <button type="submit" class="btn btn-primary">✓ Registrar Gasto</button>
     </form>
 
-    <div class="section-title">Gastos de Hoy</div>
+    <div class="section-title" style="margin-top: 30px;">Gastos de Hoy</div>
     <div id="listaGastos"></div>
   </div>
 
   <div id="historial" class="tab-content">
     <h2 style="margin-bottom: 15px; font-size: 18px;">Historial por Fecha</h2>
-    
-    <div style="margin-bottom: 20px;">
-      <input type="date" style="width:100%;padding:14px;border:2px solid var(--accent-primary);border-radius:12px;font-weight:600;" id="filtroFechaHistorial" onchange="actualizarHistorial()">
+
+    <div class="filtro-fecha-container">
+      <input type="date" class="filtro-fecha-input" id="filtroFechaHistorial" onchange="actualizarHistorial()">
+      <div class="hint-text" style="text-align: center; margin-top: 8px;">Selecciona una fecha para ver pedidos de ese día</div>
     </div>
 
-    <input type="text" class="search-box" id="searchHistorial" placeholder="Buscar..." onkeyup="actualizarHistorial()">
-    
+    <button class="btn btn-warning" onclick="exportarExcel()" style="margin-bottom: 15px;">
+      📥 Descargar Excel de Esta Fecha
+    </button>
+
+    <input type="text" class="search-box" id="searchHistorial" placeholder="Buscar en pedidos..." onkeyup="actualizarHistorial()">
+
     <div id="listaHistorial"></div>
   </div>
 
   <div id="entregados" class="tab-content">
-    <input type="text" class="search-box" id="searchEntregados" placeholder="Buscar..." onkeyup="buscarEntregados()">
+    <input type="text" class="search-box" id="searchEntregados" placeholder="Buscar entregado..." onkeyup="buscarEntregados()">
     <div id="listaEntregados"></div>
   </div>
 
   <div id="proveedores" class="tab-content">
-    <button class="btn btn-success" onclick="mostrarModalProveedor()">+ Añadir Proveedor</button>
-    
-    <div class="form-group" style="margin-top:15px;">
+    <button class="btn btn-success" onclick="mostrarModalProveedor()" style="margin-bottom: 15px;">+ Añadir Proveedor</button>
+
+    <div class="form-group">
       <label>Filtrar por día</label>
-      <select style="width:100%;padding:14px;border:2px solid var(--accent-primary);border-radius:12px;" id="filtroDiaProveedores" onchange="actualizarListaProveedores()">
-        <option value="">Todos</option>
+      <select class="filtro-dia-selector" id="filtroDiaProveedores" onchange="actualizarListaProveedores()">
+        <option value="">Todos los proveedores</option>
         <option value="LUNES">Lunes</option>
         <option value="MARTES">Martes</option>
         <option value="MIERCOLES">Miércoles</option>
@@ -567,7 +1182,7 @@ body {
         <option value="DOMINGO">Domingo</option>
       </select>
     </div>
-    
+
     <div id="listaProveedores"></div>
   </div>
 </div>
@@ -580,8 +1195,8 @@ body {
       <input type="number" id="inputMontoRealizado" placeholder="$0.00" step="0.01">
     </div>
     <div class="modal-buttons">
-      <button class="btn btn-primary" onclick="guardarRealizado('hoy')">Hoy</button>
-      <button class="btn btn-secondary" onclick="guardarRealizado('proximo')">Próximo día</button>
+      <button class="btn btn-inmediata" onclick="guardarRealizado('hoy')">Hoy</button>
+      <button class="btn btn-secondary" onclick="guardarRealizado('proximo')">Próximo día hábil</button>
     </div>
     <button class="btn btn-danger" onclick="cerrarModal()" style="margin-top: 10px;">Cancelar</button>
   </div>
@@ -591,14 +1206,14 @@ body {
   <div class="modal-content">
     <div class="modal-header">✏️ Editar Pedido</div>
     <div class="form-group">
-      <label>Productos</label>
+      <label>Productos (uno por línea)</label>
       <textarea id="editarProductos" rows="6"></textarea>
     </div>
     <div class="form-group">
       <label>Monto</label>
       <input type="number" id="editarMonto" placeholder="$0.00" step="0.01">
     </div>
-    <button class="btn btn-primary" onclick="guardarEdicion()">✓ Guardar</button>
+    <button class="btn btn-primary" onclick="guardarEdicion()">✓ Guardar Cambios</button>
     <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
   </div>
 </div>
@@ -607,11 +1222,11 @@ body {
   <div class="modal-content">
     <div class="modal-header" id="modalProveedorHeader">+ Añadir Proveedor</div>
     <div class="form-group">
-      <label>Nombre</label>
-      <input type="text" id="inputNombreProveedor" placeholder="Ej: COCA, LALA">
+      <label>Nombre del proveedor</label>
+      <input type="text" id="inputNombreProveedor" placeholder="Ej: COCA, LALA, BIMBO">
     </div>
     <div class="form-group">
-      <label>Días que pasa</label>
+      <label>¿Qué días pasa este proveedor?</label>
       <div class="checkbox-group">
         <div class="checkbox-item">
           <input type="checkbox" id="checkLunes" value="LUNES">
@@ -652,6 +1267,7 @@ body {
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -661,25 +1277,42 @@ const firebaseConfig = {
   projectId: "pedidos-proveedores-89598",
   storageBucket: "pedidos-proveedores-89598.firebasestorage.app",
   messagingSenderId: "501093587021",
-  appId: "1:501093587021:web:b213c955829740080de404"
+  appId: "1:501093587021:web:b213c955829740080de404",
+  measurementId: "G-13FNS4MCZB"
 };
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 const PROVEEDORES_INICIALES = {
-  "LUNES": ["COCA", "BOTANAS", "LALA", "JARRITO", "GAMESA"],
-  "MARTES": ["BIG COLA", "BIMBO", "BOING"],
-  "MIERCOLES": ["ALPURA", "COCA", "JARRITO"],
-  "JUEVES": ["BIMBO", "DANONE", "HELADOS"],
-  "VIERNES": ["ALEN", "BARCEL", "COCA", "LALA"],
-  "SABADO": ["ACT", "ALPURA", "BIMBO"],
+  "LUNES": ["COCA", "BOTANAS", "LALA", "JARRITO", "GAMESA", "CREMERIA", "ZORRO", "SIGMA (FUD)", "RICOLINO", "PEPSI", "PABLO"],
+  "MARTES": ["BIG COLA", "BIMBO", "BOING", "BOKADOS", "BONAFINA", "BOTANAS", "CIGARRO PALL MALL", "CREMERIA", "GUNA", "JUMEX", "KINDER", "LA COSTENA", "PABLO", "PATITOS", "QUALA", "ZORRO"],
+  "MIERCOLES": ["ALPURA", "CAMEL", "COCA", "CREMERIA", "DIZORY", "GENOMALAB", "JARRITO", "LONGANIZA", "MARLBORO", "MARS", "PABLO", "PENAFIEL", "PEPSI", "SANGRIA", "ZORRO"],
+  "JUEVES": ["BIMBO", "CREMERIA", "DANONE", "HELADOS", "KINDER", "MEDICAMENTO", "PABLO", "PEDIGRI", "ZORRO"],
+  "VIERNES": ["ALEN", "BARCEL", "BOING", "COCA", "CREMERIA", "CRISTLIZZ", "JARRITO", "LALA", "MARS", "PABLO", "PEPSI", "SABRITAS", "ZORRO"],
+  "SABADO": ["ACT", "ALPURA", "BIMBO", "BONAFONT", "CREMERIA", "GAMESA", "LA SIERRA", "PABLO", "PENAFIEL", "SABRITAS", "ZORRO"],
   "DOMINGO": ["PABLO", "ZORRO"]
 };
 
+const ORDEN_DIAS = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"];
+const DIAS_ESPANOL = {
+  "LUNES": "Lunes",
+  "MARTES": "Martes",
+  "MIERCOLES": "Miércoles",
+  "JUEVES": "Jueves",
+  "VIERNES": "Viernes",
+  "SABADO": "Sábado",
+  "DOMINGO": "Domingo"
+};
+
 const DIAS_SEMANA_MAP = {
-  'DOMINGO': 0, 'LUNES': 1, 'MARTES': 2, 'MIERCOLES': 3,
-  'JUEVES': 4, 'VIERNES': 5, 'SABADO': 6
+  'DOMINGO': 0,
+  'LUNES': 1,
+  'MARTES': 2,
+  'MIERCOLES': 3,
+  'JUEVES': 4,
+  'VIERNES': 5,
+  'SABADO': 6
 };
 
 const MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
@@ -699,6 +1332,7 @@ function actualizarFechaHeader() {
   const dia = hoy.getDate();
   const mes = MESES[hoy.getMonth()];
   const diaSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"][hoy.getDay()];
+
   document.getElementById('fechaActual').textContent = `${diaSemana}, ${dia} ${mes}`;
 }
 
@@ -713,23 +1347,46 @@ function calcularFechaPorDiaSemana(diaSemanaTexto) {
   const hoy = new Date();
   const diaActualNumero = hoy.getDay();
   const diaSeleccionadoNumero = DIAS_SEMANA_MAP[diaSemanaTexto];
+
   let diferenciaDias = diaSeleccionadoNumero - diaActualNumero;
+
+  // Si el día seleccionado es menor o igual al día actual, ir a la próxima semana
+  if (diferenciaDias <= 0) {
+    diferenciaDias += 7;
+  }
+
   const fechaCalculada = new Date(hoy);
   fechaCalculada.setDate(hoy.getDate() + diferenciaDias);
+
   return formatearFechaLocal(fechaCalculada);
+}
+
+function obtenerDiaManana() {
+  const manana = new Date();
+  manana.setDate(manana.getDate() + 1);
+  const diasSemana = ["DOMINGO", "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
+  return diasSemana[manana.getDay()];
 }
 
 function obtenerProximoDiaHabil(desde = new Date()) {
   const fecha = new Date(desde);
   fecha.setDate(fecha.getDate() + 1);
-  if (fecha.getDay() === 0) fecha.setDate(fecha.getDate() + 1);
+
+  if (fecha.getDay() === 0) {
+    fecha.setDate(fecha.getDate() + 1);
+  }
+
   return formatearFechaLocal(fecha);
 }
 
 function obtenerFechaDeEntrega(cuandoPaga) {
   const hoy = new Date();
-  if (cuandoPaga === 'hoy') return formatearFechaLocal(hoy);
-  return obtenerProximoDiaHabil(hoy);
+
+  if (cuandoPaga === 'hoy') {
+    return formatearFechaLocal(hoy);
+  } else {
+    return obtenerProximoDiaHabil(hoy);
+  }
 }
 
 function formatearFechaCompleta(fechaStr) {
@@ -741,12 +1398,27 @@ function formatearFechaCompleta(fechaStr) {
   return `${diaSemana}, ${dia} ${mes}`;
 }
 
+function inicializarDiasPorDefecto() {
+  const diaManana = obtenerDiaManana();
+
+  document.getElementById('nuevoDia').value = diaManana;
+  document.getElementById('filtroDiaProveedores').value = diaManana;
+
+  setTimeout(() => {
+    actualizarProveedoresPorDia();
+    actualizarListaProveedores();
+  }, 500);
+}
+
 function toggleTheme() {
   const html = document.documentElement;
   const currentTheme = html.getAttribute('data-theme');
   const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', newTheme);
-  document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+
+  const toggle = document.getElementById('themeToggle');
+  toggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+
   localStorage.setItem('theme', newTheme);
 }
 
@@ -754,11 +1426,22 @@ const savedTheme = localStorage.getItem('theme') || 'light';
 document.documentElement.setAttribute('data-theme', savedTheme);
 document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
 
+const connectedRef = database.ref('.info/connected');
+connectedRef.on('value', (snap) => {
+  const status = document.getElementById('connectionStatus');
+  if (snap.val() === true) {
+    status.classList.remove('offline');
+  } else {
+    status.classList.add('offline');
+  }
+});
+
 function inicializarProveedores() {
   database.ref('proveedores').once('value', (snapshot) => {
     const data = snapshot.val();
     if (!data || Object.keys(data).length === 0) {
       database.ref('proveedores').set(PROVEEDORES_INICIALES);
+      console.log('✅ Proveedores inicializados');
     }
   });
 }
@@ -773,11 +1456,16 @@ function cargarProveedores() {
 
 function generarProveedoresUnicos() {
   proveedoresUnicos = {};
+
   Object.keys(proveedoresPorDia).forEach(dia => {
     if (Array.isArray(proveedoresPorDia[dia])) {
       proveedoresPorDia[dia].forEach(proveedor => {
-        if (!proveedoresUnicos[proveedor]) proveedoresUnicos[proveedor] = [];
-        if (!proveedoresUnicos[proveedor].includes(dia)) proveedoresUnicos[proveedor].push(dia);
+        if (!proveedoresUnicos[proveedor]) {
+          proveedoresUnicos[proveedor] = [];
+        }
+        if (!proveedoresUnicos[proveedor].includes(dia)) {
+          proveedoresUnicos[proveedor].push(dia);
+        }
       });
     }
   });
@@ -801,43 +1489,150 @@ function cargarGastos() {
   });
 }
 
-function actualizarDashboard() {
-  const hoy = formatearFechaLocal(new Date());
-  const manana = obtenerProximoDiaHabil(new Date());
-  
-  let pagadoHoy = 0;
-  let pagarManana = 0;
-  
-  Object.keys(pedidos).forEach(id => {
-    const p = pedidos[id];
-    if (p.fechaEntrega && p.fechaEntrega === hoy && p.monto && p.estado === 'Inmediata') {
-      pagadoHoy += parseFloat(p.monto);
-    }
-    if (p.fechaEntrega && p.fechaEntrega === manana && p.monto && p.estado === 'Programado') {
-      pagarManana += parseFloat(p.monto);
-    }
+function actualizarHistorial() {
+  const lista = document.getElementById('listaHistorial');
+  const fechaSeleccionada = document.getElementById('filtroFechaHistorial').value;
+  const busqueda = document.getElementById('searchHistorial').value.toLowerCase();
+
+  if (!fechaSeleccionada) {
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><div>Selecciona una fecha para ver pedidos</div></div>';
+    return;
+  }
+
+  let historialArray = Object.keys(pedidos)
+    .map(id => ({id, ...pedidos[id]}))
+    .filter(p => {
+      const fechaPedido = p.fecha;
+      return fechaPedido === fechaSeleccionada;
+    });
+
+  if (busqueda) {
+    historialArray = historialArray.filter(p =>
+      p.proveedor.toLowerCase().includes(busqueda) ||
+      p.productos.toLowerCase().includes(busqueda)
+    );
+  }
+
+  historialArray.sort((a, b) => a.proveedor.localeCompare(b.proveedor));
+
+  if (historialArray.length === 0) {
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><div>No hay pedidos en esta fecha</div></div>';
+    return;
+  }
+
+  let html = '';
+  let totalGeneral = 0;
+
+  historialArray.forEach(p => {
+    const badgeClass = 'badge-' + p.estado.toLowerCase();
+    const monto = p.monto ? parseFloat(p.monto) : 0;
+    totalGeneral += monto;
+    const montoHTML = monto > 0 ? `<div class="pedido-monto">$${monto.toFixed(2)}</div>` : '';
+
+    const productosArray = p.productos.split('\n').filter(prod => prod.trim());
+    const productosHTML = productosArray.map(prod => 
+      `<span class="pedido-productos-item">${prod.trim()}</span>`
+    ).join('');
+
+    html += `
+      <div class="pedido-card">
+        <div class="pedido-header">
+          <div class="pedido-proveedor">${p.proveedor}</div>
+          <span class="badge ${badgeClass}">${p.estado}</span>
+        </div>
+        <div class="pedido-productos">${productosHTML}</div>
+        <div class="pedido-info">Creado: ${formatearFechaCompleta(p.fecha)}</div>
+        ${montoHTML}
+      </div>
+    `;
   });
-  
-  Object.keys(gastos).forEach(id => {
-    const g = gastos[id];
-    if (g.fecha === hoy && g.monto) pagadoHoy += parseFloat(g.monto);
+
+  const partes = fechaSeleccionada.split('-');
+  const fecha = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+  const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const fechaFormateada = fecha.toLocaleDateString('es-MX', opciones);
+
+  html = `
+    <div class="historial-total-card">
+      <div class="historial-total-fecha">${fechaFormateada}</div>
+      <div class="historial-total-monto">$${totalGeneral.toFixed(2)}</div>
+      <div class="historial-total-info">${historialArray.length} pedidos realizados</div>
+    </div>
+  ` + html;
+
+  lista.innerHTML = html;
+}
+
+function exportarExcel() {
+  const fechaSeleccionada = document.getElementById('filtroFechaHistorial').value;
+
+  if (!fechaSeleccionada) {
+    alert('Selecciona una fecha primero');
+    return;
+  }
+
+  const historialArray = Object.keys(pedidos)
+    .map(id => ({id, ...pedidos[id]}))
+    .filter(p => {
+      const fechaPedido = p.fecha;
+      return fechaPedido === fechaSeleccionada;
+    })
+    .sort((a, b) => a.proveedor.localeCompare(b.proveedor));
+
+  if (historialArray.length === 0) {
+    alert('No hay pedidos en esta fecha');
+    return;
+  }
+
+  const dataPedidos = [];
+
+  historialArray.forEach(p => {
+    const productosArray = p.productos.split('\n').filter(prod => prod.trim());
+
+    productosArray.forEach((producto, index) => {
+      dataPedidos.push({
+        'Proveedor': index === 0 ? p.proveedor : '',
+        'Producto': producto.trim(),
+        'Monto Total': index === 0 ? (p.monto ? `$${parseFloat(p.monto).toFixed(2)}` : '$0.00') : '',
+        'Estado': index === 0 ? p.estado : '',
+        'Fecha Creación': index === 0 ? p.fecha : '',
+        'Fecha Entrega': index === 0 ? (p.fechaEntrega || 'Pendiente') : '',
+        'Día': index === 0 ? (p.dia || 'N/A') : ''
+      });
+    });
   });
-  
-  document.getElementById('totalPagadoHoy').textContent = '$' + pagadoHoy.toFixed(2);
-  document.getElementById('totalPagarManana').textContent = '$' + pagarManana.toFixed(2);
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(dataPedidos);
+
+  ws['!cols'] = [
+    {wch: 15},
+    {wch: 40},
+    {wch: 12},
+    {wch: 12},
+    {wch: 14},
+    {wch: 14},
+    {wch: 10}
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, "Pedidos");
+
+  XLSX.writeFile(wb, `Abarrotes_ANITA_${fechaSeleccionada}.xlsx`);
+
+  mostrarToast('📥 Excel descargado con todos los productos');
 }
 
 function actualizarProveedoresPorDia() {
   const dia = document.getElementById('nuevoDia').value;
   if (!dia) return;
-  
+
   const select = document.getElementById('nuevoProveedor');
   const hint = document.getElementById('hintProveedores');
-  
+
   select.innerHTML = '<option value="">Seleccionar proveedor</option>';
-  
+
   const proveedoresDia = proveedoresPorDia[dia];
-  
+
   if (proveedoresDia && Array.isArray(proveedoresDia)) {
     const proveedoresOrdenados = [...proveedoresDia].sort();
     proveedoresOrdenados.forEach(proveedor => {
@@ -847,10 +1642,42 @@ function actualizarProveedoresPorDia() {
       select.appendChild(option);
     });
     hint.textContent = `${proveedoresOrdenados.length} proveedores disponibles`;
+  } else {
+    hint.textContent = `No hay proveedores para ${DIAS_ESPANOL[dia]}`;
   }
-  
+
   const fechaCalculada = calcularFechaPorDiaSemana(dia);
-  document.getElementById('hintDia').textContent = `Fecha: ${formatearFechaCompleta(fechaCalculada)}`;
+  document.getElementById('hintDia').textContent = `Día seleccionado: ${DIAS_ESPANOL[dia]} → Fecha: ${formatearFechaCompleta(fechaCalculada)}`;
+}
+
+function actualizarDashboard() {
+  const hoy = formatearFechaLocal(new Date());
+  const manana = obtenerProximoDiaHabil(new Date());
+
+  let pagadoHoy = 0;
+  let pagarManana = 0;
+
+  Object.keys(pedidos).forEach(id => {
+    const p = pedidos[id];
+
+    if (p.fechaEntrega && p.fechaEntrega === hoy && p.monto && p.estado === 'Inmediata') {
+      pagadoHoy += parseFloat(p.monto);
+    }
+
+    if (p.fechaEntrega && p.fechaEntrega === manana && p.monto && p.estado === 'Programado') {
+      pagarManana += parseFloat(p.monto);
+    }
+  });
+
+  Object.keys(gastos).forEach(id => {
+    const g = gastos[id];
+    if (g.fecha === hoy && g.monto) {
+      pagadoHoy += parseFloat(g.monto);
+    }
+  });
+
+  document.getElementById('totalPagadoHoy').textContent = '$' + pagadoHoy.toFixed(2);
+  document.getElementById('totalPagarManana').textContent = '$' + pagarManana.toFixed(2);
 }
 
 function buscarPedidos() {
@@ -868,42 +1695,41 @@ function filtrarPedidos(filtro) {
 function actualizarListaPedidos() {
   const lista = document.getElementById('listaPedidos');
   let pedidosArray = Object.keys(pedidos).map(id => ({id, ...pedidos[id]}));
-  
+
   if (filtroActual !== 'todos') {
     const estadoFiltro = filtroActual.charAt(0).toUpperCase() + filtroActual.slice(1);
     pedidosArray = pedidosArray.filter(p => p.estado === estadoFiltro || (filtroActual === 'inmediata' && p.estado === 'Inmediata'));
   }
-  
+
   pedidosArray = pedidosArray.filter(p => p.estado !== 'Entregado');
-  
+
   if (busquedaPedidos) {
     pedidosArray = pedidosArray.filter(p => 
       p.proveedor.toLowerCase().includes(busquedaPedidos) ||
       p.productos.toLowerCase().includes(busquedaPedidos)
     );
   }
-  
+
   pedidosArray.sort((a, b) => a.proveedor.localeCompare(b.proveedor));
-  
+
   if (pedidosArray.length === 0) {
     lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div>No hay pedidos</div></div>';
     return;
   }
-  
+
   let html = '';
   pedidosArray.forEach(p => {
     const badgeClass = 'badge-' + p.estado.toLowerCase();
     const monto = p.monto ? `<div class="pedido-monto">$${parseFloat(p.monto).toFixed(2)}</div>` : '';
-    
-    const productosArray = p.productos.split('
-').filter(prod => prod.trim());
+
+    const productosArray = p.productos.split('\n').filter(prod => prod.trim());
     const productosHTML = productosArray.map(prod => 
       `<span class="pedido-productos-item">${prod.trim()}</span>`
     ).join('');
-    
+
     const fechaPedido = p.fecha;
     const fechaEntrega = p.fechaEntrega || 'Pendiente';
-    
+
     let fechasHTML = '';
     if (p.fechaEntrega) {
       fechasHTML = `
@@ -913,7 +1739,7 @@ function actualizarListaPedidos() {
             <div class="fecha-valor">${formatearFechaCompleta(fechaPedido)}</div>
           </div>
           <div class="fecha-item">
-            <div class="fecha-label">Entrega:</div>
+            <div class="fecha-label">Se entrega:</div>
             <div class="fecha-valor">${formatearFechaCompleta(fechaEntrega)}</div>
           </div>
         </div>
@@ -921,7 +1747,7 @@ function actualizarListaPedidos() {
     } else {
       fechasHTML = `<div class="pedido-info">Creado: ${formatearFechaCompleta(fechaPedido)}</div>`;
     }
-    
+
     html += `
       <div class="pedido-card">
         <div class="pedido-header">
@@ -951,142 +1777,24 @@ function actualizarListaPedidos() {
       </div>
     `;
   });
-  
-  lista.innerHTML = html;
-}
 
-function actualizarHistorial() {
-  const lista = document.getElementById('listaHistorial');
-  const fechaSeleccionada = document.getElementById('filtroFechaHistorial').value;
-  const busqueda = document.getElementById('searchHistorial').value.toLowerCase();
-  
-  if (!fechaSeleccionada) {
-    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><div>Selecciona una fecha</div></div>';
-    return;
-  }
-  
-  let historialArray = Object.keys(pedidos)
-    .map(id => ({id, ...pedidos[id]}))
-    .filter(p => p.fecha === fechaSeleccionada);
-  
-  if (busqueda) {
-    historialArray = historialArray.filter(p =>
-      p.proveedor.toLowerCase().includes(busqueda) ||
-      p.productos.toLowerCase().includes(busqueda)
-    );
-  }
-  
-  historialArray.sort((a, b) => a.proveedor.localeCompare(b.proveedor));
-  
-  if (historialArray.length === 0) {
-    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><div>No hay pedidos</div></div>';
-    return;
-  }
-  
-  let html = '';
-  let totalGeneral = 0;
-  
-  historialArray.forEach(p => {
-    const badgeClass = 'badge-' + p.estado.toLowerCase();
-    const monto = p.monto ? parseFloat(p.monto) : 0;
-    totalGeneral += monto;
-    const montoHTML = monto > 0 ? `<div class="pedido-monto">$${monto.toFixed(2)}</div>` : '';
-    
-    const productosArray = p.productos.split('
-').filter(prod => prod.trim());
-    const productosHTML = productosArray.map(prod => 
-      `<span class="pedido-productos-item">${prod.trim()}</span>`
-    ).join('');
-    
-    html += `
-      <div class="pedido-card">
-        <div class="pedido-header">
-          <div class="pedido-proveedor">${p.proveedor}</div>
-          <span class="badge ${badgeClass}">${p.estado}</span>
-        </div>
-        <div class="pedido-productos">${productosHTML}</div>
-        <div class="pedido-info">Creado: ${formatearFechaCompleta(p.fecha)}</div>
-        ${montoHTML}
-      </div>
-    `;
-  });
-  
-  html = `
-    <div style="background:var(--bg-card);border:2px solid var(--border-color);padding:20px;border-radius:16px;margin-bottom:20px;">
-      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">${formatearFechaCompleta(fechaSeleccionada)}</div>
-      <div style="font-size:28px;font-weight:800;color:var(--accent-primary);">$${totalGeneral.toFixed(2)}</div>
-      <div style="font-size:13px;color:var(--text-secondary);">${historialArray.length} pedidos</div>
-    </div>
-  ` + html;
-  
-  lista.innerHTML = html;
-}
-
-function buscarEntregados() {
-  busquedaEntregados = document.getElementById('searchEntregados').value.toLowerCase();
-  actualizarListaEntregados();
-}
-
-function actualizarListaEntregados() {
-  const lista = document.getElementById('listaEntregados');
-  
-  let entregadosArray = Object.keys(pedidos)
-    .map(id => ({id, ...pedidos[id]}))
-    .filter(p => p.estado === 'Entregado')
-    .sort((a, b) => new Date(b.fechaEntrega || b.fecha) - new Date(a.fechaEntrega || a.fecha));
-  
-  if (busquedaEntregados) {
-    entregadosArray = entregadosArray.filter(p =>
-      p.proveedor.toLowerCase().includes(busquedaEntregados) ||
-      p.productos.toLowerCase().includes(busquedaEntregados)
-    );
-  }
-  
-  if (entregadosArray.length === 0) {
-    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div>No hay pedidos entregados</div></div>';
-    return;
-  }
-  
-  let html = '';
-  entregadosArray.forEach(p => {
-    const monto = p.monto ? `<div class="pedido-monto">$${parseFloat(p.monto).toFixed(2)}</div>` : '';
-    const productosArray = p.productos.split('
-').filter(prod => prod.trim());
-    const productosHTML = productosArray.map(prod => 
-      `<span class="pedido-productos-item">${prod.trim()}</span>`
-    ).join('');
-    
-    html += `
-      <div class="pedido-card">
-        <div class="pedido-header">
-          <div class="pedido-proveedor">${p.proveedor}</div>
-          <span class="badge badge-entregado">✓ Entregado</span>
-        </div>
-        <div class="pedido-productos">${productosHTML}</div>
-        <div class="pedido-info">Creado: ${formatearFechaCompleta(p.fecha)}</div>
-        ${monto}
-        <button class="btn btn-danger" onclick="eliminarPedido('${p.id}')" style="margin-top:10px;">Eliminar</button>
-      </div>
-    `;
-  });
-  
   lista.innerHTML = html;
 }
 
 function actualizarListaGastos() {
   const lista = document.getElementById('listaGastos');
   const hoy = formatearFechaLocal(new Date());
-  
+
   let gastosArray = Object.keys(gastos)
     .map(id => ({id, ...gastos[id]}))
     .filter(g => g.fecha === hoy)
     .sort((a, b) => b.timestamp - a.timestamp);
-  
+
   if (gastosArray.length === 0) {
-    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><div>No hay gastos hoy</div></div>';
+    lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><div>No hay gastos registrados hoy</div></div>';
     return;
   }
-  
+
   let html = '';
   gastosArray.forEach(g => {
     html += `
@@ -1096,20 +1804,156 @@ function actualizarListaGastos() {
           <span class="badge badge-gasto">GASTO</span>
         </div>
         <div class="pedido-monto">$${parseFloat(g.monto).toFixed(2)}</div>
-        <button class="btn btn-danger" onclick="eliminarGasto('${g.id}')">Eliminar</button>
+        <div class="pedido-info">Registrado: ${g.fecha}</div>
+        <div class="pedido-actions">
+          <button class="btn-icon" onclick="eliminarGasto('${g.id}')">Eliminar</button>
+        </div>
       </div>
     `;
   });
-  
+
+  lista.innerHTML = html;
+}
+
+function crearGasto(e) {
+  e.preventDefault();
+
+  const gasto = {
+    descripcion: document.getElementById('gastoDescripcion').value,
+    monto: parseFloat(document.getElementById('gastoMonto').value),
+    fecha: formatearFechaLocal(new Date()),
+    timestamp: Date.now()
+  };
+
+  database.ref('gastos').push(gasto);
+  document.getElementById('formNuevoGasto').reset();
+
+  mostrarToast('✓ Gasto registrado');
+  actualizarListaGastos();
+}
+
+function eliminarGasto(id) {
+  if (confirm('¿Eliminar este gasto?')) {
+    database.ref('gastos/' + id).remove();
+    mostrarToast('✓ Gasto eliminado');
+  }
+}
+
+function buscarEntregados() {
+  busquedaEntregados = document.getElementById('searchEntregados').value.toLowerCase();
+  actualizarListaEntregados();
+}
+
+function actualizarListaEntregados() {
+  const lista = document.getElementById('listaEntregados');
+  const hoy = formatearFechaLocal(new Date());
+
+  let entregadosArray = Object.keys(pedidos)
+    .map(id => ({id, ...pedidos[id]}))
+    .filter(p => p.estado === 'Entregado')
+    .sort((a, b) => new Date(b.fechaEntrega || b.fechaPago || b.fecha) - new Date(a.fechaEntrega || a.fechaPago || a.fecha));
+
+  if (busquedaEntregados) {
+    entregadosArray = entregadosArray.filter(p =>
+      p.proveedor.toLowerCase().includes(busquedaEntregados) ||
+      p.productos.toLowerCase().includes(busquedaEntregados)
+    );
+  }
+
+  const entregadosHoy = entregadosArray.filter(p => (p.fechaEntrega || p.fechaPago || p.fecha) === hoy);
+  const historial = entregadosArray.filter(p => (p.fechaEntrega || p.fechaPago || p.fecha) !== hoy);
+
+  let html = '';
+
+  if (entregadosHoy.length > 0) {
+    html += '<div class="section-title">Entregados hoy (' + entregadosHoy.length + ')</div>';
+    entregadosHoy.forEach(p => {
+      const monto = p.monto ? `<div class="pedido-monto">$${parseFloat(p.monto).toFixed(2)}</div>` : '';
+      const productosArray = p.productos.split('\n').filter(prod => prod.trim());
+      const productosHTML = productosArray.map(prod => 
+        `<span class="pedido-productos-item">${prod.trim()}</span>`
+      ).join('');
+
+      const fechaPedido = p.fecha || 'N/A';
+      const fechaEntrega = p.fechaEntrega || p.fechaPago || p.fecha;
+
+      html += `
+        <div class="pedido-card">
+          <div class="pedido-header">
+            <div class="pedido-proveedor">${p.proveedor}</div>
+            <span class="badge badge-entregado">✓ Entregado</span>
+          </div>
+          <div class="pedido-productos">${productosHTML}</div>
+          <div class="pedido-fechas">
+            <div class="fecha-item">
+              <div class="fecha-label">Creado:</div>
+              <div class="fecha-valor">${formatearFechaCompleta(fechaPedido)}</div>
+            </div>
+            <div class="fecha-item">
+              <div class="fecha-label">Entregado:</div>
+              <div class="fecha-valor">${formatearFechaCompleta(fechaEntrega)}</div>
+            </div>
+          </div>
+          ${monto}
+          <div class="pedido-actions">
+            <button class="btn-icon" onclick="eliminarPedido('${p.id}')">Eliminar</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  if (historial.length > 0) {
+    html += '<div class="section-title">Historial (' + historial.length + ')</div>';
+    historial.slice(0, 20).forEach(p => {
+      const monto = p.monto ? `<div class="pedido-monto">$${parseFloat(p.monto).toFixed(2)}</div>` : '';
+      const productosArray = p.productos.split('\n').filter(prod => prod.trim());
+      const productosHTML = productosArray.map(prod => 
+        `<span class="pedido-productos-item">${prod.trim()}</span>`
+      ).join('');
+
+      const fechaPedido = p.fecha || 'N/A';
+      const fechaEntrega = p.fechaEntrega || p.fechaPago || p.fecha;
+
+      html += `
+        <div class="pedido-card">
+          <div class="pedido-header">
+            <div class="pedido-proveedor">${p.proveedor}</div>
+            <span class="badge badge-entregado">✓ Entregado</span>
+          </div>
+          <div class="pedido-productos">${productosHTML}</div>
+          <div class="pedido-fechas">
+            <div class="fecha-item">
+              <div class="fecha-label">Creado:</div>
+              <div class="fecha-valor">${formatearFechaCompleta(fechaPedido)}</div>
+            </div>
+            <div class="fecha-item">
+              <div class="fecha-label">Entregado:</div>
+              <div class="fecha-valor">${formatearFechaCompleta(fechaEntrega)}</div>
+            </div>
+          </div>
+          ${monto}
+          <div class="pedido-actions">
+            <button class="btn-icon" onclick="eliminarPedido('${p.id}')">Eliminar</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  if (entregadosArray.length === 0) {
+    html = '<div class="empty-state"><div class="empty-state-icon">📭</div><div>No hay pedidos entregados</div></div>';
+  }
+
   lista.innerHTML = html;
 }
 
 function crearPedido(e) {
   e.preventDefault();
-  
+
   const diaSeleccionado = document.getElementById('nuevoDia').value;
   const fechaCalculada = calcularFechaPorDiaSemana(diaSeleccionado);
-  
+
   const pedido = {
     dia: diaSeleccionado,
     proveedor: document.getElementById('nuevoProveedor').value,
@@ -1118,52 +1962,43 @@ function crearPedido(e) {
     estado: 'Pendiente',
     timestamp: Date.now()
   };
-  
+
   database.ref('pedidos').push(pedido);
   document.getElementById('formNuevoPedido').reset();
-  
+
+  inicializarDiasPorDefecto();
+
   mostrarToast(`✓ Pedido creado para ${formatearFechaCompleta(fechaCalculada)}`);
   cambiarTab('pedidos');
-}
-
-function crearGasto(e) {
-  e.preventDefault();
-  
-  const gasto = {
-    descripcion: document.getElementById('gastoDescripcion').value,
-    monto: parseFloat(document.getElementById('gastoMonto').value),
-    fecha: formatearFechaLocal(new Date()),
-    timestamp: Date.now()
-  };
-  
-  database.ref('gastos').push(gasto);
-  document.getElementById('formNuevoGasto').reset();
-  
-  mostrarToast('✓ Gasto registrado');
 }
 
 function editarPedido(id) {
   pedidoActual = id;
   const p = pedidos[id];
-  
+
   document.getElementById('editarProductos').value = p.productos;
   document.getElementById('editarMonto').value = p.monto || '';
-  
+
   document.getElementById('modalEditar').classList.add('active');
 }
 
 function guardarEdicion() {
   const productos = document.getElementById('editarProductos').value;
   const monto = document.getElementById('editarMonto').value;
-  
+
   if (!productos.trim()) {
     alert('Los productos no pueden estar vacíos');
     return;
   }
-  
-  const updates = { productos: productos };
-  if (monto && parseFloat(monto) > 0) updates.monto = parseFloat(monto);
-  
+
+  const updates = {
+    productos: productos
+  };
+
+  if (monto && parseFloat(monto) > 0) {
+    updates.monto = parseFloat(monto);
+  }
+
   database.ref('pedidos/' + pedidoActual).update(updates);
   cerrarModal();
   mostrarToast('✓ Pedido actualizado');
@@ -1181,21 +2016,22 @@ function guardarRealizado(cuando) {
     alert('Ingresa un monto válido');
     return;
   }
-  
+
   const fechaPago = formatearFechaLocal(new Date());
   const fechaEntrega = obtenerFechaDeEntrega(cuando);
-  
+
   const updates = {
     monto: parseFloat(monto),
     fechaPago: fechaPago,
     fechaEntrega: fechaEntrega,
     estado: cuando === 'hoy' ? 'Inmediata' : 'Programado'
   };
-  
+
   database.ref('pedidos/' + pedidoActual).update(updates);
   cerrarModal();
-  
-  mostrarToast(`✓ Pedido realizado - Entrega: ${formatearFechaCompleta(fechaEntrega)}`);
+
+  const mensajeDia = formatearFechaCompleta(fechaEntrega);
+  mostrarToast(`✓ Pedido realizado - Se entrega: ${mensajeDia}`);
 }
 
 function marcarEntregado(id) {
@@ -1206,49 +2042,48 @@ function marcarEntregado(id) {
 }
 
 function eliminarPedido(id) {
-  if (confirm('¿Eliminar este pedido?')) {
+  if (confirm('¿Eliminar este pedido permanentemente?')) {
     database.ref('pedidos/' + id).remove();
     mostrarToast('✓ Pedido eliminado');
-  }
-}
-
-function eliminarGasto(id) {
-  if (confirm('¿Eliminar este gasto?')) {
-    database.ref('gastos/' + id).remove();
-    mostrarToast('✓ Gasto eliminado');
   }
 }
 
 function actualizarListaProveedores() {
   const lista = document.getElementById('listaProveedores');
   const diaFiltro = document.getElementById('filtroDiaProveedores').value;
-  
+
   let proveedoresArray = Object.keys(proveedoresUnicos).map(nombre => ({
     nombre: nombre,
     dias: proveedoresUnicos[nombre]
   }));
-  
+
   if (diaFiltro) {
     proveedoresArray = proveedoresArray.filter(p => p.dias.includes(diaFiltro));
   }
-  
+
   proveedoresArray.sort((a, b) => a.nombre.localeCompare(b.nombre));
-  
+
   if (proveedoresArray.length === 0) {
     lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><div>No hay proveedores</div></div>';
     return;
   }
-  
+
   let html = '';
   proveedoresArray.forEach(p => {
-    const diasHTML = p.dias.sort().map(dia => 
-      `<span class="dia-badge">${dia}</span>`
+    const diasOrdenados = p.dias.sort((a, b) => 
+      ORDEN_DIAS.indexOf(a) - ORDEN_DIAS.indexOf(b)
+    );
+
+    const diasHTML = diasOrdenados.map(dia => 
+      `<span class="dia-badge">${DIAS_ESPANOL[dia]}</span>`
     ).join('');
-    
+
     html += `
       <div class="proveedor-item">
-        <div class="proveedor-nombre">${p.nombre}</div>
-        <div class="proveedor-dias">${diasHTML}</div>
+        <div>
+          <div class="proveedor-nombre">${p.nombre}</div>
+          <div class="proveedor-dias">${diasHTML}</div>
+        </div>
         <div class="proveedor-actions">
           <button class="btn-edit" onclick="editarProveedor('${p.nombre}')">Editar</button>
           <button class="btn-icon" onclick="eliminarProveedor('${p.nombre}')">Eliminar</button>
@@ -1256,7 +2091,7 @@ function actualizarListaProveedores() {
       </div>
     `;
   });
-  
+
   lista.innerHTML = html;
 }
 
@@ -1272,40 +2107,42 @@ function editarProveedor(nombre) {
   proveedorActualEditar = nombre;
   document.getElementById('modalProveedorHeader').textContent = '✏️ Editar Proveedor';
   document.getElementById('inputNombreProveedor').value = nombre;
-  
+
   const diasProveedor = proveedoresUnicos[nombre] || [];
   document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => {
     cb.checked = diasProveedor.includes(cb.value);
   });
-  
+
   document.getElementById('modalProveedor').classList.add('active');
 }
 
 function guardarProveedor() {
   const nombre = document.getElementById('inputNombreProveedor').value.trim().toUpperCase();
-  
+
   if (!nombre) {
     alert('Ingresa el nombre del proveedor');
     return;
   }
-  
+
   const diasSeleccionados = [];
   document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked').forEach(cb => {
     diasSeleccionados.push(cb.value);
   });
-  
+
   if (diasSeleccionados.length === 0) {
     alert('Selecciona al menos un día');
     return;
   }
-  
+
   if (proveedorActualEditar && proveedorActualEditar !== nombre) {
     Object.keys(proveedoresPorDia).forEach(dia => {
       const index = proveedoresPorDia[dia].indexOf(proveedorActualEditar);
-      if (index > -1) proveedoresPorDia[dia].splice(index, 1);
+      if (index > -1) {
+        proveedoresPorDia[dia].splice(index, 1);
+      }
     });
   }
-  
+
   Object.keys(proveedoresPorDia).forEach(dia => {
     const index = proveedoresPorDia[dia].indexOf(nombre);
     if (diasSeleccionados.includes(dia)) {
@@ -1314,21 +2151,27 @@ function guardarProveedor() {
         proveedoresPorDia[dia].sort();
       }
     } else {
-      if (index > -1) proveedoresPorDia[dia].splice(index, 1);
+      if (index > -1) {
+        proveedoresPorDia[dia].splice(index, 1);
+      }
     }
   });
-  
+
   database.ref('proveedores').set(proveedoresPorDia);
+
   cerrarModal();
   mostrarToast('✓ Proveedor guardado');
 }
 
 function eliminarProveedor(nombre) {
-  if (confirm(`¿Eliminar ${nombre}?`)) {
+  if (confirm(`¿Eliminar el proveedor ${nombre} de todos los días?`)) {
     Object.keys(proveedoresPorDia).forEach(dia => {
       const index = proveedoresPorDia[dia].indexOf(nombre);
-      if (index > -1) proveedoresPorDia[dia].splice(index, 1);
+      if (index > -1) {
+        proveedoresPorDia[dia].splice(index, 1);
+      }
     });
+
     database.ref('proveedores').set(proveedoresPorDia);
     mostrarToast('✓ Proveedor eliminado');
   }
@@ -1337,14 +2180,14 @@ function eliminarProveedor(nombre) {
 function cambiarTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  
+
   const tabs = document.querySelectorAll('.tab');
-  tabs.forEach(t => {
+  tabs.forEach((t, index) => {
     if (t.textContent.toLowerCase().includes(tab.toLowerCase())) {
       t.classList.add('active');
     }
   });
-  
+
   document.getElementById(tab).classList.add('active');
 }
 
@@ -1358,12 +2201,17 @@ function mostrarToast(mensaje) {
   const toast = document.getElementById('toast');
   toast.textContent = mensaje;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
 }
 
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', function(e) {
-    if (e.target === this) cerrarModal();
+    if (e.target === this) {
+      cerrarModal();
+    }
   });
 });
 
@@ -1371,8 +2219,26 @@ inicializarProveedores();
 cargarProveedores();
 cargarPedidos();
 cargarGastos();
+inicializarDiasPorDefecto();
 actualizarFechaHeader();
+
 setInterval(actualizarFechaHeader, 60000);
+
+console.log('✅ Abarrotes ANITA - DASHBOARD CORREGIDO');
+console.log('');
+console.log('💰 NUEVA LÓGICA DEL DASHBOARD:');
+console.log('📌 PAGADO HOY:');
+console.log('   → Pedidos con estado "Inmediata" Y fechaEntrega === hoy');
+console.log('   → Gastos directos registrados hoy');
+console.log('');
+console.log('📌 A PAGAR MAÑANA:');
+console.log('   → Pedidos con estado "Programado" Y fechaEntrega === mañana');
+console.log('');
+console.log('🔄 DINÁMICO:');
+console.log('   → Si hoy creas un pedido "Programado" para mañana');
+console.log('   → Cuando sea mañana, ya NO estará en "A pagar mañana"');
+console.log('   → Porque ya pasó su fecha de entrega');
 </script>
+
 </body>
 </html>
