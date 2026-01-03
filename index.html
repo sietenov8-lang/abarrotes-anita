@@ -1350,9 +1350,14 @@ function calcularFechaPorDiaSemana(diaSemanaTexto) {
 
   let diferenciaDias = diaSeleccionadoNumero - diaActualNumero;
 
-  // Si el día seleccionado es menor o igual al día actual, ir a la próxima semana
-  if (diferenciaDias <= 0) {
+  // Si es más de 1 día hacia atrás, ir a la próxima semana
+  if (diferenciaDias < -1) {
     diferenciaDias += 7;
+  }
+
+  // Si HOY es DOMINGO y seleccionas DOMINGO, ir al próximo
+  if (diaActualNumero === 0 && diferenciaDias === 0) {
+    diferenciaDias = 7;
   }
 
   const fechaCalculada = new Date(hoy);
@@ -1543,6 +1548,9 @@ function actualizarHistorial() {
         <div class="pedido-productos">${productosHTML}</div>
         <div class="pedido-info">Creado: ${formatearFechaCompleta(p.fecha)}</div>
         ${montoHTML}
+        <div class="pedido-actions" style="margin-top: 15px;">
+          <button class="btn btn-danger" onclick="eliminarPedido('${p.id}')">Eliminar</button>
+        </div>
       </div>
     `;
   });
@@ -1651,34 +1659,39 @@ function actualizarProveedoresPorDia() {
 }
 
 function actualizarDashboard() {
-  const hoy = formatearFechaLocal(new Date());
-  const manana = obtenerProximoDiaHabil(new Date());
+    const hoy = formatearFechaLocal(new Date());
+    const manana = obtenerProximoDiaHabil(new Date());
 
-  let pagadoHoy = 0;
-  let pagarManana = 0;
+    let pagadoHoy = 0;
+    let pagarManana = 0;
 
-  Object.keys(pedidos).forEach(id => {
-    const p = pedidos[id];
+    Object.keys(pedidos).forEach(id => {
+      const p = pedidos[id];
 
-    if (p.fechaEntrega && p.fechaEntrega === hoy && p.monto && p.estado === 'Inmediata') {
-      pagadoHoy += parseFloat(p.monto);
-    }
+      // PAGADO HOY: Todos los pedidos que se entregaron/entregan HOY
+      if (p.fechaEntrega && p.fechaEntrega === hoy && p.monto) {
+        if (p.estado === 'Inmediata' || p.estado === 'Programado' || p.estado === 'Entregado') {
+          pagadoHoy += parseFloat(p.monto);
+        }
+      }
 
-    if (p.fechaEntrega && p.fechaEntrega === manana && p.monto && p.estado === 'Programado') {
-      pagarManana += parseFloat(p.monto);
-    }
-  });
+      // A PAGAR MAÑANA: Pedidos programados para mañana
+      if (p.fechaEntrega && p.fechaEntrega === manana && p.monto && p.estado === 'Programado') {
+        pagarManana += parseFloat(p.monto);
+      }
+    });
 
-  Object.keys(gastos).forEach(id => {
-    const g = gastos[id];
-    if (g.fecha === hoy && g.monto) {
-      pagadoHoy += parseFloat(g.monto);
-    }
-  });
+    // Sumar gastos directos de hoy
+    Object.keys(gastos).forEach(id => {
+      const g = gastos[id];
+      if (g.fecha === hoy && g.monto) {
+        pagadoHoy += parseFloat(g.monto);
+      }
+    });
 
-  document.getElementById('totalPagadoHoy').textContent = '$' + pagadoHoy.toFixed(2);
-  document.getElementById('totalPagarManana').textContent = '$' + pagarManana.toFixed(2);
-}
+    document.getElementById('totalPagadoHoy').textContent = '$' + pagadoHoy.toFixed(2);
+    document.getElementById('totalPagarManana').textContent = '$' + pagarManana.toFixed(2);
+  }
 
 function buscarPedidos() {
   busquedaPedidos = document.getElementById('searchPedidos').value.toLowerCase();
